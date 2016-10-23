@@ -10,6 +10,8 @@ public class WindowFrame extends JFrame {
 	
 	protected static final int WIDTH = 1500; // edit this to change window size;
 	protected static final int HEIGHT = WIDTH; // edit at your own risk, usually works best as a square
+
+	
 	public static final String TITLE = "Connect Four";
 	
 	public WindowFrame() {
