@@ -21,11 +21,11 @@ public class FallingToken {
 		this.offset = (int) (WindowFrame.HEIGHT * (GameCanvas.TOP_BOTTOM_MARGIN + row / 6.0));
 		this.bounds.y -= offset;
 		this.representation.setFrame(this.bounds);
-		this.stepsRemaining = offset / GameCanvas.ANIMATION_SPEED;
+		this.stepsRemaining = offset / GameCanvas.ADJUSTED_ANIMATION_SPEED;
 	}
 	
 	public boolean update() {
-		this.bounds.y += GameCanvas.ANIMATION_SPEED;
+		this.bounds.y += GameCanvas.ADJUSTED_ANIMATION_SPEED;
 		this.representation.setFrame(this.bounds);
 		return --this.stepsRemaining == 0;
 		

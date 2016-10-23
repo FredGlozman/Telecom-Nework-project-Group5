@@ -24,29 +24,39 @@ public class WaitCanvas extends Canvas {
 	// Background
 	protected static final Color BACKGROUND_TOP_COLOR = GameCanvas.BACKGROUND_TOP_COLOR;
 	protected static final Color BACKGROUND_BOTTOM_COLOR = GameCanvas.BACKGROUND_BOTTOM_COLOR;
+	protected static final Paint BACKGROUND_GRADIENT = new GradientPaint(0, 0, BACKGROUND_TOP_COLOR, 0, WindowFrame.HEIGHT, BACKGROUND_BOTTOM_COLOR);
 	
 	// Text
 	protected static final String TEXT = "Waiting for other players...";
 	protected static final Color TEXT_COLOR = GameCanvas.GRID_COLOR;
 	protected static final int TEXT_FONT_SIZE = 50;
-	protected static final Font TEXT_FONT = new Font("SansSerif", Font.BOLD, TEXT_FONT_SIZE);
+	protected static final int ADJUSTED_TEXT_FONT_SIZE = (TEXT_FONT_SIZE * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final Font TEXT_FONT = new Font("SansSerif", Font.BOLD, ADJUSTED_TEXT_FONT_SIZE);
 	
 	// Time
 	protected static final Color TIME_COLOR = GameCanvas.GRID_BORDER_COLOR;
 	protected static final int TIME_FONT_SIZE = 100;
-	protected static final Font TIME_FONT = new Font("SansSerif", Font.BOLD, TIME_FONT_SIZE);
+	protected static final int ADJUSTED_TIME_FONT_SIZE = (TIME_FONT_SIZE * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final Font TIME_FONT = new Font("SansSerif", Font.BOLD, ADJUSTED_TIME_FONT_SIZE);
 	
 	// Outer spinner
 	protected static final Color OUTER_SPINNER_COLOR = GameCanvas.TOKEN1_COLOR;
 	protected static final int OUTER_SPINNER_DIAMETER = 200;
+	protected static final int ADJUSTED_OUTER_SPINNER_DIAMETER = (OUTER_SPINNER_DIAMETER * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
 	protected static final int OUTER_SPINNER_ARC_ANGLE = 270;
 	protected static final int OUTER_SPINNER_THICKNESS = 10;
+	protected static final int ADJUSTED_OUTER_SPINNER_THICKNESS = (OUTER_SPINNER_THICKNESS * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final BasicStroke OUTER_SPINNER_STROKE = new BasicStroke(ADJUSTED_OUTER_SPINNER_THICKNESS);
 	
 	// Inner spinner
 	protected static final Color INNER_SPINNER_COLOR = GameCanvas.TOKEN2_COLOR;
 	protected static final int INNER_SPINNER_DIAMETER = 150;
+	protected static final int ADJUSTED_INNER_SPINNER_DIAMETER = (INNER_SPINNER_DIAMETER * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
 	protected static final int INNER_SPINNER_ARC_ANGLE = 270;
 	protected static final int INNER_SPINNER_THICKNESS = 10;
+	protected static final int ADJUSTED_INNER_SPINNER_THICKNESS = (INNER_SPINNER_THICKNESS * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final BasicStroke INNER_SPINNER_STROKE = new BasicStroke(ADJUSTED_INNER_SPINNER_THICKNESS);
+
 	
 	private Timer timer;
 	private int secondsWaited, fractionsOfASecondWaited;
@@ -76,8 +86,7 @@ public class WaitCanvas extends Canvas {
 	}
 	
 	private void drawBackground(Graphics2D g2) {
-		Paint gradient = new GradientPaint(0, 0, BACKGROUND_TOP_COLOR, 0, WindowFrame.HEIGHT, BACKGROUND_BOTTOM_COLOR);
-		g2.setPaint(gradient);
+		g2.setPaint(BACKGROUND_GRADIENT);
 		Rectangle bg = new Rectangle(0, 0, WindowFrame.WIDTH, WindowFrame.HEIGHT);
 		g2.fill(bg);
 	}
@@ -103,18 +112,18 @@ public class WaitCanvas extends Canvas {
 	
 	private void showOuterSpinner(Graphics2D g2) {
 		g2.setPaint(OUTER_SPINNER_COLOR);
-		g2.setStroke(new BasicStroke(OUTER_SPINNER_THICKNESS));
-		int x = (int) ((1 - RIGHT_MARGIN) * WindowFrame.WIDTH - OUTER_SPINNER_DIAMETER);
-		int y = (WindowFrame.HEIGHT - OUTER_SPINNER_DIAMETER) / 2;
-		g2.drawArc(x, y, OUTER_SPINNER_DIAMETER, OUTER_SPINNER_DIAMETER, -this.fractionsOfASecondWaited * 360 / FPS, OUTER_SPINNER_ARC_ANGLE);
+		g2.setStroke(OUTER_SPINNER_STROKE);
+		int x = (int) ((1 - RIGHT_MARGIN) * WindowFrame.WIDTH - ADJUSTED_OUTER_SPINNER_DIAMETER);
+		int y = (WindowFrame.HEIGHT - ADJUSTED_OUTER_SPINNER_DIAMETER) / 2;
+		g2.drawArc(x, y, ADJUSTED_OUTER_SPINNER_DIAMETER, ADJUSTED_OUTER_SPINNER_DIAMETER, -this.fractionsOfASecondWaited * 360 / FPS, OUTER_SPINNER_ARC_ANGLE);
 	}
 	
 	private void showInnerSpinner(Graphics2D g2) {
 		g2.setPaint(INNER_SPINNER_COLOR);
-		g2.setStroke(new BasicStroke(INNER_SPINNER_THICKNESS));
-		int x = (int) ((1 - RIGHT_MARGIN) * WindowFrame.WIDTH - INNER_SPINNER_DIAMETER - (OUTER_SPINNER_DIAMETER - INNER_SPINNER_DIAMETER) / 2);
-		int y = (WindowFrame.HEIGHT - INNER_SPINNER_DIAMETER) / 2;
-		g2.drawArc(x, y, INNER_SPINNER_DIAMETER, INNER_SPINNER_DIAMETER, this.fractionsOfASecondWaited * 360 / FPS, INNER_SPINNER_ARC_ANGLE);
+		g2.setStroke(INNER_SPINNER_STROKE);
+		int x = (int) ((1 - RIGHT_MARGIN) * WindowFrame.WIDTH - ADJUSTED_INNER_SPINNER_DIAMETER - (ADJUSTED_OUTER_SPINNER_DIAMETER - ADJUSTED_INNER_SPINNER_DIAMETER) / 2);
+		int y = (WindowFrame.HEIGHT - ADJUSTED_INNER_SPINNER_DIAMETER) / 2;
+		g2.drawArc(x, y, ADJUSTED_INNER_SPINNER_DIAMETER, ADJUSTED_INNER_SPINNER_DIAMETER, this.fractionsOfASecondWaited * 360 / FPS, INNER_SPINNER_ARC_ANGLE);
 	}
 
 	@Override

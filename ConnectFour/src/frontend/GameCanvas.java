@@ -11,7 +11,8 @@ public class GameCanvas extends Canvas {
 	private static final long serialVersionUID = -7366085140697800431L;
 	
 	// Animation speed
-	protected static final int ANIMATION_SPEED = 60;
+	protected static final int ANIMATION_SPEED = 80;
+	protected static final int ADJUSTED_ANIMATION_SPEED = (ANIMATION_SPEED * WindowFrame.HEIGHT) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
 	
 	// Positioning
 	// Grid
@@ -37,16 +38,23 @@ public class GameCanvas extends Canvas {
 	protected static final Color GRID_BORDER_COLOR = new Color(0.9f, 0.95f, 1.0f);
 	protected static final Color BACKGROUND_TOP_COLOR = new Color(0.2f, 0.18f, 0.18f);
 	protected static final Color BACKGROUND_BOTTOM_COLOR = new Color(0.25f, 0.22f, 0.22f);
+	protected static final Paint BACKGROUND_GRADIENT = new GradientPaint(0, 0, BACKGROUND_TOP_COLOR, 0, WindowFrame.HEIGHT, BACKGROUND_BOTTOM_COLOR);
 	protected static final Color TOKEN1_COLOR = Color.RED;
 	protected static final Color TOKEN2_COLOR = Color.YELLOW;
 	protected static final Color ARROW_COLOR = new Color(0.5f, 0.5f, 0.5f);
+	
+	// Misc
+	protected static final int GRID_STROKE_THICKNESS = 6;
+	protected static final int ADJUSTED_GRID_STROKE_THICKNESS = (GRID_STROKE_THICKNESS * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final BasicStroke GRID_STROKE = new BasicStroke(ADJUSTED_GRID_STROKE_THICKNESS);
 	
 	//Strings
 	protected static final String WINNING_STRING = "YOU WIN!";
 	protected static final String DRAW_STRING = "DRAW!";
 	protected static final String LOSING_STRING = "YOU LOSE!";
 	protected static final int FONT_SIZE = 200;
-	protected static final Font FONT = new Font("SansSerif", Font.BOLD, FONT_SIZE);
+	protected static final int ADJUSTED_FONT_SIZE = (FONT_SIZE * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final Font FONT = new Font("SansSerif", Font.BOLD, ADJUSTED_FONT_SIZE);
 	
 	private Timer timer;
 	
@@ -92,13 +100,14 @@ public class GameCanvas extends Canvas {
 		drawTokens(g2);
 		drawFallingToken(g2);
 		drawGrid(g2);
-		drawArrowIndicator(g2);
-		drawWinLose(g2);
+		if (gl.getWinner() == 0)
+			drawArrowIndicator(g2);
+		else
+			drawWinLose(g2);
 	}
 
 	private void drawBackground(Graphics2D g2) {
-		Paint gradient = new GradientPaint(0, 0, BACKGROUND_TOP_COLOR, 0, WindowFrame.HEIGHT, BACKGROUND_BOTTOM_COLOR);
-		g2.setPaint(gradient);
+		g2.setPaint(BACKGROUND_GRADIENT);
 		Rectangle bg = new Rectangle(0, 0, WindowFrame.WIDTH, WindowFrame.HEIGHT);
 		g2.fill(bg);
 	}
@@ -125,7 +134,7 @@ public class GameCanvas extends Canvas {
 	private void drawGrid(Graphics2D g2) {
 		g2.setPaint(GRID_COLOR);
 		g2.fill(this.grid);
-		g2.setStroke(new BasicStroke(5));
+		g2.setStroke(GRID_STROKE);
 		g2.setPaint(GRID_BORDER_COLOR);
 		g2.draw(this.grid);
 	}
@@ -147,9 +156,6 @@ public class GameCanvas extends Canvas {
 	}
 	
 	private void drawWinLose(Graphics2D g2) {
-		if (this.gl.getWinner() == 0)
-			return;
-		
 		String str;		
 		if (this.gl.isWinner())
 			str = WINNING_STRING;
@@ -158,8 +164,7 @@ public class GameCanvas extends Canvas {
 		else
 			str = LOSING_STRING;
 		
-		Paint gradient = new GradientPaint(0, 0, BACKGROUND_TOP_COLOR, 0, WindowFrame.HEIGHT, BACKGROUND_BOTTOM_COLOR);
-		g2.setPaint(gradient);
+		g2.setPaint(BACKGROUND_GRADIENT);
 		g2.setFont(FONT);
 		FontMetrics fm = g2.getFontMetrics();
 		int x = (WindowFrame.WIDTH - fm.stringWidth(str)) / 2;
