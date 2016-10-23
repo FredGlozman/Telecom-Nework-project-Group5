@@ -1,4 +1,4 @@
-package server;
+package backend;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -7,7 +7,7 @@ import java.net.URLConnection;
 import java.util.Scanner;
 
 /**
- * Singleton class that reads from and writes to a file hosted on a server
+ * Singleton class that reads from and writes to a file hosted on a McGill server
  */
 public class ServerTextFileIO {	
 	private static final String SERVER_ROOT = "http://cs.mcgill.ca/";
