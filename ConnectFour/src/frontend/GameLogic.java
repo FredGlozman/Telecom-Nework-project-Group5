@@ -94,8 +94,10 @@ public class GameLogic implements ViewController {
 			int sameVertical = 1;
 			for (int j = 5; j > -1; j--) {
 				int current = this.positions[i][j];
-				if (current == 0)
+				if (current == 0) {
+					previousVertical = -1;
 					continue;
+				}
 				// check horizontally
 				if (i > 2 	&& current == this.positions[i - 1][j]
 						 	&& current == this.positions[i - 2][j]
