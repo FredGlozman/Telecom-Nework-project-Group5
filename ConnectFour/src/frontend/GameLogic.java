@@ -1,7 +1,5 @@
 package frontend;
 
-import java.util.Arrays;
-
 public class GameLogic implements ViewController {
 	private boolean userTurn;
 	private int gameWinner; // 0 = nobody
@@ -60,17 +58,25 @@ public class GameLogic implements ViewController {
 	}
 	
 	public void computeWinner() {
-		// TODO Compute winner and set this.gameWinner to it: 0 = nobody, 1 = type 1, 2 = type 2
-//		// Uncomment to print the board
-//		for (int i = 0; i < 7; i++)
-//			System.out.println(i + ": " + Arrays.toString(this.positions[i]));
-//		System.out.println();
+		// Uncomment loop to print board
+		printBoard();
+		
 		if (checkDiagonalWinner(0, 5, 1, -1) > 0) return;
 		if (checkDiagonalWinner(6, 0, -1, 1) > 0) return;
 		if (checkDiagonalWinner(6, 5, -1, -1) > 0) return;
 		if (checkDiagonalWinner(0, 0, 1, 1) > 0) return;
 		if (checkStraightWinner() > 0) return;
 		this.gameWinner = 0;
+	}
+	
+	private void printBoard() {
+		for (int j = 0; j < 6; j++) {
+			 for (int i = 0; i < 7; i++) {
+				 System.out.print(this.positions[i][j]);
+			 }
+			 System.out.println();
+		}
+		System.out.println();
 	}
 	
 	private int checkStraightWinner() {
@@ -142,6 +148,10 @@ public class GameLogic implements ViewController {
 	
 	public boolean isWinner() {
 		return this.gameWinner == this.userColor;
+	}
+	
+	public boolean isDraw() {
+		return this.gameWinner == 3;
 	}
 	
 	public int[][] getPositions() {

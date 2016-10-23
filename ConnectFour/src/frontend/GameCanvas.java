@@ -43,6 +43,7 @@ public class GameCanvas extends Canvas {
 	
 	//Strings
 	protected static final String WINNING_STRING = "YOU WIN!";
+	protected static final String DRAW_STRING = "DRAW!";
 	protected static final String LOSING_STRING = "YOU LOSE!";
 	protected static final int FONT_SIZE = 200;
 	protected static final Font FONT = new Font("SansSerif", Font.BOLD, FONT_SIZE);
@@ -152,6 +153,8 @@ public class GameCanvas extends Canvas {
 		String str;		
 		if (this.gl.isWinner())
 			str = WINNING_STRING;
+		else if (this.gl.isDraw())
+			str = DRAW_STRING;
 		else
 			str = LOSING_STRING;
 		
