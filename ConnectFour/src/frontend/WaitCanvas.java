@@ -61,7 +61,6 @@ public class WaitCanvas extends Canvas {
 	private Timer timer;
 	private int secondsWaited, fractionsOfASecondWaited;
 	
-	@SuppressWarnings("unused")
 	private WaitLogic wl;
 	
 	private static final long serialVersionUID = 4562861486690573984L;
@@ -71,6 +70,8 @@ public class WaitCanvas extends Canvas {
 		this.fractionsOfASecondWaited = 0;
 		this.timer = new Timer(1000 / FPS, this);
 		this.wl = wl;
+		addMouseMotionListener(this);
+		addMouseListener(this);
 		timer.start();
 	}
 
@@ -146,7 +147,10 @@ public class WaitCanvas extends Canvas {
 	public void mouseExited(MouseEvent e) {}
 
 	@Override
-	public void mousePressed(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {
+		// TODO Trigger this on Network signal instead of mouse press
+		this.wl.startGame();
+	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {}

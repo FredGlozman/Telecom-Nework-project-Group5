@@ -1,6 +1,10 @@
 package frontend;
 
 public class GameLogic implements ViewController {
+	protected static final int TURN_TIME = 30; // time limit per turn in seconds
+	
+	private int timeLeft;
+	
 	private boolean userTurn;
 	private int gameWinner; // 0 = nobody
 	private int userColor, opponentColor; // 1 or 2
@@ -17,6 +21,19 @@ public class GameLogic implements ViewController {
 		this.positions = new int[7][6];
 		this.gc = new GameCanvas(this);
 		this.f = f;
+		resetTimer();
+	}
+	
+	private void resetTimer() {
+		this.timeLeft = TURN_TIME * GameCanvas.FPS;
+	}
+	
+	// returns whether time is up
+	public int updateTimer() {
+		if (--this.timeLeft == 0)
+			this.gameWinner = userTurn ? opponentColor : userColor;
+		
+		return this.timeLeft;
 	}
 	
 	public void placeToken(int column) {
@@ -51,6 +68,8 @@ public class GameLogic implements ViewController {
 	
 	public void insertToken(int column, int row, int type) {
 		this.positions[column][row] = type;
+		
+		resetTimer();
 		computeWinner();
 		// TODO Comment in one line below, delete two lines below 
 		// this.userTurn = !this.userTurn;
@@ -78,15 +97,6 @@ public class GameLogic implements ViewController {
 			 System.out.println();
 		}
 		System.out.println();
-	}
-	
-	public boolean boardIsFull() {
-		for (int i = 0; i < 7; i++) {
-			if (this.positions[i][0] == 0)
-				return false;
-		}
-		this.gameWinner = 3;
-		return true;
 	}
 	
 	private int checkStraightWinner() {
@@ -148,8 +158,21 @@ public class GameLogic implements ViewController {
 		return 0;
 	}
 	
+	private boolean boardIsFull() {
+		for (int i = 0; i < 7; i++) {
+			if (this.positions[i][0] == 0)
+				return false;
+		}
+		this.gameWinner = 3;
+		return true;
+	}
+
 	public int getWinner() {
 		return this.gameWinner;
+	}
+
+	public int getTimeLeft() {
+		return timeLeft;
 	}
 	
 	public boolean isWinner() {
@@ -168,6 +191,14 @@ public class GameLogic implements ViewController {
 		return this.userTurn;
 	}
 	
+	public int getUserColor() {
+		return this.userColor;
+	}
+	
+	public int getOpponentColor() {
+		return this.opponentColor;
+	}
+	
 	@Override
 	public Canvas getCanvas() {
 		return this.gc;
@@ -176,5 +207,4 @@ public class GameLogic implements ViewController {
 	public void rematch() {
 		this.f.waitForPlayers();
 	}
-	
 }

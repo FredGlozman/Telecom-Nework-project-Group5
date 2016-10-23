@@ -16,7 +16,6 @@ public class GameCanvas extends Canvas {
 	
 	// Positioning
 	// Grid
-	protected static final double LEFT_RIGHT_PADDING = 0.02; // percentage of window (e.g. if 0.1, then 10% of the window to the left, and 10% to the right will be left blank)
 	protected static final double TOP_PADDING = 0.03;
 	protected static final double BOTTOM_PADDING = 0.028;
 	protected static final double LEFT_RIGHT_MARGIN = 0.15; 
@@ -32,6 +31,11 @@ public class GameCanvas extends Canvas {
 	protected static final double HOLE_DIAMETER = (1 - 2 * LEFT_RIGHT_MARGIN) * WindowFrame.WIDTH / 7.0 * (1 - 2 * HOLE_MARGIN); //computed
 	// Arrow indicator
 	protected static final double ARROW_Y_POSITION = (int) ((TOP_BOTTOM_MARGIN - TOP_PADDING) * WindowFrame.HEIGHT - 2 * ROW_HEIGHT / 3); // computed
+	// Timer
+	protected static final double TIMER_SPACING = 0.05;
+	protected static final double LEFT_RIGHT_PADDING = 0.02; // percentage of window (e.g. if 0.1, then 10% of the window to the left, and 10% to the right will be left blank)
+	protected static final double TIMER_HEIGHT = 25;
+	protected static final double ADJUSTED_TIMER_HEIGHT = (TIMER_HEIGHT * WindowFrame.HEIGHT) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
 	
 	// Colors
 	protected static final Color GRID_COLOR = new Color(0.65f, 0.75f, 0.95f);
@@ -58,18 +62,24 @@ public class GameCanvas extends Canvas {
 	
 	private Timer timer;
 	
+	private int timeLeft;
+	
 	private GameLogic gl;
 	private Area grid;
 	private int[][] positions;
 	
 	private int selectedColumn;
 	
+	private Color userColor, opponentColor;
+	
 	private FallingToken fallingToken;
 	
 	public GameCanvas(GameLogic gl) {
-		this.selectedColumn = -1;
 		this.gl = gl;
 		this.positions = this.gl.getPositions();
+		this.selectedColumn = -1;
+		this.userColor = this.gl.getUserColor() == 1 ? TOKEN1_COLOR : TOKEN2_COLOR;
+		this.opponentColor = this.gl.getOpponentColor() == 1 ? TOKEN1_COLOR : TOKEN2_COLOR;
 		this.timer = new Timer(1000 / FPS, this);
 		createGrid();
 		addMouseMotionListener(this);
@@ -100,10 +110,13 @@ public class GameCanvas extends Canvas {
 		drawTokens(g2);
 		drawFallingToken(g2);
 		drawGrid(g2);
-		if (gl.getWinner() == 0)
+		if (gl.getWinner() == 0) {
 			drawArrowIndicator(g2);
-		else
+			drawTimeLeft(g2);
+		}
+		else {
 			drawWinLose(g2);
+		}
 	}
 
 	private void drawBackground(Graphics2D g2) {
@@ -153,6 +166,20 @@ public class GameCanvas extends Canvas {
 		
 		g2.setPaint(ARROW_COLOR);
 		g2.fill(arrow);
+	}
+	
+	private void drawTimeLeft(Graphics2D g2) {
+		double ratioOfTimeLeft = (double) this.timeLeft / (GameLogic.TURN_TIME * FPS);
+		int x = (int) (LEFT_RIGHT_MARGIN * WindowFrame.WIDTH);
+		int y = (int) ((1 - TOP_BOTTOM_MARGIN + TIMER_SPACING) * WindowFrame.HEIGHT);
+		int width = (int) ((1 - 2 * LEFT_RIGHT_MARGIN) * WindowFrame.WIDTH);
+		int height = (int) ADJUSTED_TIMER_HEIGHT;
+		
+		x += (width * (1 - ratioOfTimeLeft)) / 2;
+		width -= width * (1 - ratioOfTimeLeft);
+		
+		g2.setPaint(this.gl.isUserTurn() ? this.userColor : this.opponentColor);
+		g2.fillRect(x, y, width, height);
 	}
 	
 	private void drawWinLose(Graphics2D g2) {
@@ -247,6 +274,8 @@ public class GameCanvas extends Canvas {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		this.timeLeft = this.gl.updateTimer();
+		
 		if (this.gl.getWinner() != 0) {
 			timer.stop();
 		} else if (this.fallingToken != null && this.fallingToken.update()) {

@@ -20,9 +20,7 @@ public class WindowFrame extends JFrame {
 		setResizable(false);
 		setTitle(TITLE);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		// TODO Flow of game
-//		waitForPlayers();
-		startGame();
+		waitForPlayers();
 	}
 	
 	public void startGame() {

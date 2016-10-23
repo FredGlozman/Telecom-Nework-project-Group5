@@ -3,7 +3,6 @@ package frontend;
 public class WaitLogic implements ViewController {
 
 	private WaitCanvas wc;
-	@SuppressWarnings("unused")
 	private WindowFrame f;
 	
 	public WaitLogic(WindowFrame f) {
@@ -14,6 +13,10 @@ public class WaitLogic implements ViewController {
 	@Override
 	public Canvas getCanvas() {
 		return this.wc;
+	}
+	
+	public void startGame() {
+		this.f.startGame();
 	}
 
 }
