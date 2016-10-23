@@ -59,6 +59,7 @@ public class GameLogic implements ViewController {
 	
 	public void computeWinner() {
 		// TODO Compute winner and set this.gameWinner to it: 0 = nobody, 1 = type 1, 2 = type 2
+		// hello from the other side
 		this.gameWinner = 0;
 	}
 	
