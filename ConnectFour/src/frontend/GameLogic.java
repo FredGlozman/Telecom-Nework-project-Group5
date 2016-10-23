@@ -59,13 +59,13 @@ public class GameLogic implements ViewController {
 	
 	public void computeWinner() {
 		// Uncomment loop to print board
-		printBoard();
-		
+		//printBoard();
 		if (checkDiagonalWinner(0, 5, 1, -1) > 0) return;
 		if (checkDiagonalWinner(6, 0, -1, 1) > 0) return;
 		if (checkDiagonalWinner(6, 5, -1, -1) > 0) return;
 		if (checkDiagonalWinner(0, 0, 1, 1) > 0) return;
 		if (checkStraightWinner() > 0) return;
+		if (boardIsFull()) return;
 		this.gameWinner = 0;
 	}
 	
@@ -77,6 +77,15 @@ public class GameLogic implements ViewController {
 			 System.out.println();
 		}
 		System.out.println();
+	}
+	
+	public boolean boardIsFull() {
+		for (int i = 0; i < 7; i++) {
+			if (this.positions[i][0] == 0)
+				return false;
+		}
+		this.gameWinner = 3;
+		return true;
 	}
 	
 	private int checkStraightWinner() {
@@ -91,17 +100,14 @@ public class GameLogic implements ViewController {
 				if (i > 2 	&& current == this.positions[i - 1][j]
 						 	&& current == this.positions[i - 2][j]
 						 	&& current == this.positions[i - 3][j]) {
-					System.out.println("horizontal win: " + current);
 					this.gameWinner = current;
 					return current;
 				}
 				if (current == previousVertical)
 					sameVertical++;
-				else {
+				else
 					sameVertical = 1;
-				}
 				if (sameVertical == 4) {
-					System.out.println("vertical win: " + current);
 					this.gameWinner = current;
 					return current;
 				}
@@ -122,16 +128,11 @@ public class GameLogic implements ViewController {
 					previous = -1;
 					continue;
 				}
-				//System.out.println("(" + currRow +" , " + j +"): " + current);
-				if (current == previous) {
+				if (current == previous)
 					count++;
-				}
 				else
 					count = 1;
 				if (count == 4) {
-					//System.out.println("start row: " + startRow + " start col: " + startColumn );
-					
-					System.out.println("diagonal win: " + current);
 					this.gameWinner = current;
 					return current;
 				}
