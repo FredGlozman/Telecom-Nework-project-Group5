@@ -1,5 +1,7 @@
 package frontend;
 
+import java.util.Arrays;
+
 public class GameLogic implements ViewController {
 	private boolean userTurn;
 	private int gameWinner; // 0 = nobody
@@ -59,8 +61,79 @@ public class GameLogic implements ViewController {
 	
 	public void computeWinner() {
 		// TODO Compute winner and set this.gameWinner to it: 0 = nobody, 1 = type 1, 2 = type 2
-		// hello from the other side
+//		// Uncomment to print the board
+//		for (int i = 0; i < 7; i++)
+//			System.out.println(i + ": " + Arrays.toString(this.positions[i]));
+//		System.out.println();
+		if (checkDiagonalWinner(0, 5, 1, -1) > 0) return;
+		if (checkDiagonalWinner(6, 0, -1, 1) > 0) return;
+		if (checkDiagonalWinner(6, 5, -1, -1) > 0) return;
+		if (checkDiagonalWinner(0, 0, 1, 1) > 0) return;
+		if (checkStraightWinner() > 0) return;
 		this.gameWinner = 0;
+	}
+	
+	private int checkStraightWinner() {
+		int previousVertical = -1;
+		for (int i = 0; i < 7; i++) {
+			int sameVertical = 1;
+			for (int j = 5; j > -1; j--) {
+				int current = this.positions[i][j];
+				if (current == 0)
+					continue;
+				// check horizontally
+				if (i > 2 	&& current == this.positions[i - 1][j]
+						 	&& current == this.positions[i - 2][j]
+						 	&& current == this.positions[i - 3][j]) {
+					System.out.println("horizontal win: " + current);
+					this.gameWinner = current;
+					return current;
+				}
+				if (current == previousVertical)
+					sameVertical++;
+				else {
+					sameVertical = 1;
+				}
+				if (sameVertical == 4) {
+					System.out.println("vertical win: " + current);
+					this.gameWinner = current;
+					return current;
+				}
+				previousVertical = current;
+			}
+		}
+		return 0;
+	}
+	
+	private int checkDiagonalWinner(int startRow, int startColumn, int rowIncrement, int colIncrement) {
+		for (int i = startRow; (i < 7 && i > -1); i+= rowIncrement) {
+			int currRow = i;
+			int count = 1;
+			int previous = -1;
+			for (int j = startColumn; (j < 6 && j > -1) && (currRow > -1 && currRow < 7); j+= colIncrement) {
+				int current = this.positions[currRow][j];
+				if (current == 0) {
+					previous = -1;
+					continue;
+				}
+				//System.out.println("(" + currRow +" , " + j +"): " + current);
+				if (current == previous) {
+					count++;
+				}
+				else
+					count = 1;
+				if (count == 4) {
+					//System.out.println("start row: " + startRow + " start col: " + startColumn );
+					
+					System.out.println("diagonal win: " + current);
+					this.gameWinner = current;
+					return current;
+				}
+				previous = current;
+				currRow += rowIncrement;
+			}
+		}
+		return 0;
 	}
 	
 	public int getWinner() {
