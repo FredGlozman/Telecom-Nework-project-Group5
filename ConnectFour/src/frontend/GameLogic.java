@@ -69,6 +69,7 @@ public class GameLogic implements ViewController {
 		this.gameWinner = 0;
 	}
 	
+	@SuppressWarnings("unused")
 	private void printBoard() {
 		for (int j = 0; j < 6; j++) {
 			 for (int i = 0; i < 7; i++) {
