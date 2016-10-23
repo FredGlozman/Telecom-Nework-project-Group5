@@ -59,7 +59,7 @@ public class GameLogic implements ViewController {
 	
 	public void computeWinner() {
 		// Uncomment loop to print board
-		//printBoard();
+		printBoard();
 		if (checkDiagonalWinner(0, 5, 1, -1) > 0) return;
 		if (checkDiagonalWinner(6, 0, -1, 1) > 0) return;
 		if (checkDiagonalWinner(6, 5, -1, -1) > 0) return;
@@ -92,24 +92,30 @@ public class GameLogic implements ViewController {
 		int previousVertical = -1;
 		for (int i = 0; i < 7; i++) {
 			int sameVertical = 1;
-			for (int j = 5; j > -1; j--) {
+			for (int j = 0; j < 6; j++) {
 				int current = this.positions[i][j];
 				if (current == 0) {
 					previousVertical = -1;
 					continue;
 				}
+				System.out.println("(" + i + ", " + j + ") current: " + current );
 				// check horizontally
 				if (i > 2 	&& current == this.positions[i - 1][j]
 						 	&& current == this.positions[i - 2][j]
 						 	&& current == this.positions[i - 3][j]) {
+					System.out.println("win horizontally: " + current);
 					this.gameWinner = current;
 					return current;
 				}
-				if (current == previousVertical)
+				if (current == previousVertical) {
 					sameVertical++;
-				else
+				}
+				else {
 					sameVertical = 1;
+				}
+				System.out.println("same vertical: " + sameVertical);
 				if (sameVertical == 4) {
+					System.out.println("win vertically: " + current);
 					this.gameWinner = current;
 					return current;
 				}
@@ -135,6 +141,7 @@ public class GameLogic implements ViewController {
 				else
 					count = 1;
 				if (count == 4) {
+					System.out.println("win diagonally: " + current);
 					this.gameWinner = current;
 					return current;
 				}
