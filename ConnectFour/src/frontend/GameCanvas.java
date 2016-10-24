@@ -12,7 +12,7 @@ public class GameCanvas extends Canvas {
 	
 	// Animation speed
 	protected static final int ANIMATION_SPEED = 80;
-	protected static final int ADJUSTED_ANIMATION_SPEED = (ANIMATION_SPEED * WindowFrame.HEIGHT) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final int ADJUSTED_ANIMATION_SPEED = adjustHeight(ANIMATION_SPEED);
 	
 	// Positioning
 	// Grid
@@ -34,8 +34,8 @@ public class GameCanvas extends Canvas {
 	// Timer
 	protected static final double TIMER_SPACING = 0.05;
 	protected static final double LEFT_RIGHT_PADDING = 0.02; // percentage of window (e.g. if 0.1, then 10% of the window to the left, and 10% to the right will be left blank)
-	protected static final double TIMER_HEIGHT = 25;
-	protected static final double ADJUSTED_TIMER_HEIGHT = (TIMER_HEIGHT * WindowFrame.HEIGHT) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final int TIMER_HEIGHT = 25;
+	protected static final int ADJUSTED_TIMER_HEIGHT = adjustHeight(TIMER_HEIGHT);
 	
 	// Colors
 	protected static final Color GRID_COLOR = new Color(0.65f, 0.75f, 0.95f);
@@ -46,18 +46,21 @@ public class GameCanvas extends Canvas {
 	protected static final Color TOKEN1_COLOR = Color.RED;
 	protected static final Color TOKEN2_COLOR = Color.YELLOW;
 	protected static final Color ARROW_COLOR = new Color(0.5f, 0.5f, 0.5f);
+	protected static final Color WIN_LOSE_TEXT_BORDER_COLOR = GRID_BORDER_COLOR;
 	
 	// Misc
 	protected static final int GRID_STROKE_THICKNESS = 6;
-	protected static final int ADJUSTED_GRID_STROKE_THICKNESS = (GRID_STROKE_THICKNESS * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final int ADJUSTED_GRID_STROKE_THICKNESS = adjustWidth(GRID_STROKE_THICKNESS);
 	protected static final BasicStroke GRID_STROKE = new BasicStroke(ADJUSTED_GRID_STROKE_THICKNESS);
+	protected static final int WIN_LOSE_TEXT_BORDER_THICKNESS = 4;
+	protected static final int ADJUSTED_WIN_LOSE_TEXT_BORDER_THICKNESS = adjustWidth(WIN_LOSE_TEXT_BORDER_THICKNESS);
 	
 	//Strings
 	protected static final String WINNING_STRING = "YOU WIN!";
 	protected static final String DRAW_STRING = "DRAW!";
 	protected static final String LOSING_STRING = "YOU LOSE!";
 	protected static final int FONT_SIZE = 200;
-	protected static final int ADJUSTED_FONT_SIZE = (FONT_SIZE * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final int ADJUSTED_FONT_SIZE = adjustWidth(FONT_SIZE);
 	protected static final Font FONT = new Font("SansSerif", Font.BOLD, ADJUSTED_FONT_SIZE);
 	
 	private Timer timer;
@@ -173,7 +176,7 @@ public class GameCanvas extends Canvas {
 		int x = (int) (LEFT_RIGHT_MARGIN * WindowFrame.WIDTH);
 		int y = (int) ((1 - TOP_BOTTOM_MARGIN + TIMER_SPACING) * WindowFrame.HEIGHT);
 		int width = (int) ((1 - 2 * LEFT_RIGHT_MARGIN) * WindowFrame.WIDTH);
-		int height = (int) ADJUSTED_TIMER_HEIGHT;
+		int height = ADJUSTED_TIMER_HEIGHT;
 		
 		x += (width * (1 - ratioOfTimeLeft)) / 2;
 		width -= width * (1 - ratioOfTimeLeft);
@@ -191,11 +194,19 @@ public class GameCanvas extends Canvas {
 		else
 			str = LOSING_STRING;
 		
-		g2.setPaint(BACKGROUND_GRADIENT);
 		g2.setFont(FONT);
 		FontMetrics fm = g2.getFontMetrics();
 		int x = (WindowFrame.WIDTH - fm.stringWidth(str)) / 2;
 		int y = fm.getAscent() + (WindowFrame.HEIGHT - (fm.getAscent() + fm.getDescent())) / 2;
+
+		g2.setPaint(WIN_LOSE_TEXT_BORDER_COLOR);
+		for (int borderLayerX = -ADJUSTED_WIN_LOSE_TEXT_BORDER_THICKNESS; borderLayerX <= ADJUSTED_WIN_LOSE_TEXT_BORDER_THICKNESS; borderLayerX++) {
+			for (int borderLayerY = -ADJUSTED_WIN_LOSE_TEXT_BORDER_THICKNESS; borderLayerY <= ADJUSTED_WIN_LOSE_TEXT_BORDER_THICKNESS; borderLayerY++) {
+				g2.drawString(str, x + borderLayerX, y + borderLayerY);
+			}
+		}
+		
+		g2.setPaint(BACKGROUND_GRADIENT);
 		g2.drawString(str, x, y);
 	}
 

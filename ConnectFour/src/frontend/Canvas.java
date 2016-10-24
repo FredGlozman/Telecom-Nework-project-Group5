@@ -12,4 +12,12 @@ public abstract class Canvas extends JPanel implements ActionListener, MouseList
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 	}
+	
+	protected static int adjustWidth(int x) {
+		return (x * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	}
+	
+	protected static int adjustHeight(int x) {
+		return (x * WindowFrame.HEIGHT) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	}
 }

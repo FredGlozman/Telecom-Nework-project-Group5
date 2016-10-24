@@ -30,31 +30,31 @@ public class WaitCanvas extends Canvas {
 	protected static final String TEXT = "Waiting for other players...";
 	protected static final Color TEXT_COLOR = GameCanvas.GRID_COLOR;
 	protected static final int TEXT_FONT_SIZE = 50;
-	protected static final int ADJUSTED_TEXT_FONT_SIZE = (TEXT_FONT_SIZE * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final int ADJUSTED_TEXT_FONT_SIZE = adjustWidth(TEXT_FONT_SIZE);
 	protected static final Font TEXT_FONT = new Font("SansSerif", Font.BOLD, ADJUSTED_TEXT_FONT_SIZE);
 	
 	// Time
 	protected static final Color TIME_COLOR = GameCanvas.GRID_BORDER_COLOR;
 	protected static final int TIME_FONT_SIZE = 100;
-	protected static final int ADJUSTED_TIME_FONT_SIZE = (TIME_FONT_SIZE * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final int ADJUSTED_TIME_FONT_SIZE = adjustWidth(TIME_FONT_SIZE);
 	protected static final Font TIME_FONT = new Font("SansSerif", Font.BOLD, ADJUSTED_TIME_FONT_SIZE);
 	
 	// Outer spinner
 	protected static final Color OUTER_SPINNER_COLOR = GameCanvas.TOKEN1_COLOR;
 	protected static final int OUTER_SPINNER_DIAMETER = 200;
-	protected static final int ADJUSTED_OUTER_SPINNER_DIAMETER = (OUTER_SPINNER_DIAMETER * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final int ADJUSTED_OUTER_SPINNER_DIAMETER = adjustWidth(OUTER_SPINNER_DIAMETER);
 	protected static final int OUTER_SPINNER_ARC_ANGLE = 270;
 	protected static final int OUTER_SPINNER_THICKNESS = 10;
-	protected static final int ADJUSTED_OUTER_SPINNER_THICKNESS = (OUTER_SPINNER_THICKNESS * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final int ADJUSTED_OUTER_SPINNER_THICKNESS = adjustWidth(OUTER_SPINNER_THICKNESS);
 	protected static final BasicStroke OUTER_SPINNER_STROKE = new BasicStroke(ADJUSTED_OUTER_SPINNER_THICKNESS);
 	
 	// Inner spinner
 	protected static final Color INNER_SPINNER_COLOR = GameCanvas.TOKEN2_COLOR;
 	protected static final int INNER_SPINNER_DIAMETER = 150;
-	protected static final int ADJUSTED_INNER_SPINNER_DIAMETER = (INNER_SPINNER_DIAMETER * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final int ADJUSTED_INNER_SPINNER_DIAMETER = adjustWidth(INNER_SPINNER_DIAMETER);
 	protected static final int INNER_SPINNER_ARC_ANGLE = 270;
 	protected static final int INNER_SPINNER_THICKNESS = 10;
-	protected static final int ADJUSTED_INNER_SPINNER_THICKNESS = (INNER_SPINNER_THICKNESS * WindowFrame.WIDTH) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
+	protected static final int ADJUSTED_INNER_SPINNER_THICKNESS = adjustWidth(INNER_SPINNER_THICKNESS);
 	protected static final BasicStroke INNER_SPINNER_STROKE = new BasicStroke(ADJUSTED_INNER_SPINNER_THICKNESS);
 
 	
