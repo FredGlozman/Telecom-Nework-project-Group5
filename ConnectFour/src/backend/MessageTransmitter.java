@@ -1,8 +1,7 @@
-package network;
+package backend;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class MessageTransmitter extends Thread {
 	int port_num;
