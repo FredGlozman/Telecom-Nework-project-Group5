@@ -116,9 +116,9 @@ public class ServerTextFileIO {
 	
 	/**
 	 * Removes all instances of a specified line in the file
-	 * @param lineToremove removes all lines in the file that match this line
+	 * @param lineToRemove removes all lines in the file that match this line
 	 */
-	public synchronized void removeLine(String lineToremove) {
+	public synchronized void removeLine(String lineToRemove) {
 		String fileContents = read();	
 		if(fileContents == null || fileContents.equals("")) {
 			return;
@@ -128,7 +128,7 @@ public class ServerTextFileIO {
 		
 		fileContents = "";
 		for(String line : lines) {		
-			if(line != null && !line.equals("") && !line.equals(lineToremove)) {
+			if(line != null && !line.equals("") && !line.equals(lineToRemove)) {
 				fileContents += line + "\n";
 			}
 		}
