@@ -10,9 +10,9 @@ import java.net.Socket;
 import frontend.MiddleWare;
 
 public class MessageListener extends Thread {
-	int port_num; // to be changed to a constant value
-	ServerSocket listener_socket;
-	MiddleWare mw;
+	private int port_num; 
+	private ServerSocket listener_socket;
+	private MiddleWare mw;
 
 	public MessageListener(int port, MiddleWare mw) {
 		this.port_num = port;

@@ -11,6 +11,9 @@ public class PlayerPool {
 	
 	private final PoolObserver observer;
 	
+	/**
+	 * @param observer will get notified when a match is made 
+	 */
 	public PlayerPool(PoolObserver observer) {
 		this.observer = observer;
 		
@@ -19,26 +22,34 @@ public class PlayerPool {
 	}
 			
 	/**
-	 * Add yourself to the player pool. 
-	 * Will call back the observer when ready for game-play.
+	 * Add yourself to the player pool.
+	 * Can only join the player pool if there is less than 2 players already in the pool. 
+	 * If there are 2 players in the pool, need to wait before adding yourself to the pool. 
+	 * Will call back the observer when a match is made and are ready for game-play.
 	 */
 	public void addSelf() {
 		Thread adder = new Thread() {
 			public void run() {	
 				waitForAvailability(); //waits until there are less than 2 players in the pool
 						
+				//no player in the pool. add yourself to the pool.
 				if(pool.size() == 0) {
 					Player me = new Player();
 					file.addLine(me.toString());
 					
-					listen(me);
-				} else if(pool.size() == 1) {
+					listen(me); //listen for another player to join the pool
+				} 
+				//1 player is already in the pool. 
+				//add yourself to the pool but make sure your coin value is complementary to the player in the pool.
+				else if(pool.size() == 1) {
 					Player opponent = pool.get(0);
 					Player me = new Player(opponent);
 					file.addLine(me.toString());
 										
 					observer.startGame(me, opponent);
-				} else {
+				} 
+				//an error occurred. should have been waiting 
+				else {
 					throw new RuntimeException("An error occured. More than 1 player is in the Player Pool. Can't add player yet. Should have been waiting.");
 				}
 		    }  
@@ -48,7 +59,7 @@ public class PlayerPool {
 	}
 	
 	/**
-	 * Wait for second player to connect and post their player info to the server
+	 * Wait for second player to connect
 	 * @param me my player info
 	 */
 	private void listen(Player me) {
@@ -78,7 +89,7 @@ public class PlayerPool {
 			    	}
 		    	} while(opponent == null);
 		    			    	
-		    	file.clear();
+		    	file.clear(); //2 players have been matched. clear the pool to make room for other players.
 		    			    	
 		    	observer.startGame(me, opponent);
 		    }  

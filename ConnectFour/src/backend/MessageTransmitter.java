@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class MessageTransmitter extends Thread {
-	int port_num;
-	int message;
-	String host_name;
+	private int port_num;
+	private int message;
+	private String host_name;
 
 	public MessageTransmitter(String hostName, int message, int port) {
 		this.port_num = port;
