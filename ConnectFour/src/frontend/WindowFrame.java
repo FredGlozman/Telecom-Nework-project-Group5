@@ -3,7 +3,7 @@ package frontend;
 import javax.swing.JFrame;
 
 public class WindowFrame extends JFrame {
-	protected static final int CASE = 1;
+	protected static final int CASE = 0; // 0 or 1 - two opponents must be in opposite states
 	
 	protected static final String IP = "localhost";
 	protected static final int PORT_1 = 8877 + CASE;

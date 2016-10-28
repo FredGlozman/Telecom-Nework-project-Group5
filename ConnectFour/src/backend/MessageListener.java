@@ -22,8 +22,6 @@ public class MessageListener extends Thread {
 			listener_socket = new ServerSocket(port_num);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
-//		} finally {
-//			close();
 		}
 	}
 
@@ -48,7 +46,7 @@ public class MessageListener extends Thread {
 
 	public void close() {
 		try {
-			if(listener_socket != null) {
+			if (listener_socket != null) {
 				listener_socket.close();
 			}
 		} catch (IOException e) {

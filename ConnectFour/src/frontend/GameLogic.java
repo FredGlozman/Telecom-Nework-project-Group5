@@ -37,8 +37,10 @@ public class GameLogic implements ViewController, MiddleWare {
 	
 	// returns whether time is up
 	public int updateTimer() {
-		if (--this.timeLeft == 0)
+		if (--this.timeLeft == 0) {
+			// TODO Synchronize to ensure both players agree
 			this.gameWinner = userTurn ? opponentColor : userColor;
+		}
 		
 		return this.timeLeft;
 	}
@@ -210,6 +212,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 
 	public void rematch() {
+		this.ml.close();
 		this.f.waitForPlayers();
 	}
 
