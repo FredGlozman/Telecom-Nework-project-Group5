@@ -3,12 +3,13 @@ package frontend;
 import javax.swing.JFrame;
 
 public class WindowFrame extends JFrame {
-	protected static final int CASE = 0;
+	protected static final int CASE = 1;
 	
 	protected static final String IP = "localhost";
 	protected static final int PORT_1 = 8877 + CASE;
 	protected static final int PORT_2 = 8878 - CASE;
 	protected static final int USER_NUMBER = 1 + CASE;
+	protected static final boolean START = CASE == 0;
 	
 	
 	private static final long serialVersionUID = -2938584211301935192L;
@@ -32,7 +33,7 @@ public class WindowFrame extends JFrame {
 	
 	public void startGame() {
 		setVisible(false);
-		setContentPane(new GameLogic(this, true, USER_NUMBER).getCanvas());
+		setContentPane(new GameLogic(this, START, USER_NUMBER).getCanvas());
 		setVisible(true);
 	}
 	
