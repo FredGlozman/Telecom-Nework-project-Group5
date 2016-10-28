@@ -1,7 +1,10 @@
 package frontend;
 
-public class GameLogic implements ViewController {
-	protected static final int TURN_TIME = 30; // time limit per turn in seconds
+import backend.*;
+
+public class GameLogic implements ViewController, MiddleWare {
+	
+	protected static final int TURN_TIME = 45; // time limit per turn in seconds
 	
 	private int timeLeft;
 	
@@ -13,6 +16,8 @@ public class GameLogic implements ViewController {
 	private WindowFrame f;
 	private int[][] positions;
 	
+	private MessageListener ml;
+	
 	public GameLogic(WindowFrame f, boolean userTurn, int userColor) {
 		this.userTurn = userTurn;
 		this.gameWinner = 0;
@@ -21,6 +26,8 @@ public class GameLogic implements ViewController {
 		this.positions = new int[7][6];
 		this.gc = new GameCanvas(this);
 		this.f = f;
+		this.ml = new MessageListener(WindowFrame.PORT_2, this);
+		this.ml.start();
 		resetTimer();
 	}
 	
@@ -37,7 +44,7 @@ public class GameLogic implements ViewController {
 	}
 	
 	public void placeToken(int column) {
-		// TODO Send play to other player
+		(new MessageTransmitter(WindowFrame.IP, column, WindowFrame.PORT_1)).start();
 		this.dropToken(column, this.userColor);
 	}
 	
@@ -71,9 +78,7 @@ public class GameLogic implements ViewController {
 		
 		resetTimer();
 		computeWinner();
-		// TODO Comment in one line below, delete two lines below 
-		// this.userTurn = !this.userTurn;
-		this.userColor = this.userColor % 2 + 1;
+		this.userTurn = !this.userTurn;
 	}
 	
 	public void computeWinner() {
@@ -206,5 +211,10 @@ public class GameLogic implements ViewController {
 
 	public void rematch() {
 		this.f.waitForPlayers();
+	}
+
+	@Override
+	public void transferData(int data) {
+		receiveToken(data);
 	}
 }

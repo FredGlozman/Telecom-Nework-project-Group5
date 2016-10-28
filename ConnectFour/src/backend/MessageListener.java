@@ -7,12 +7,16 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import frontend.MiddleWare;
+
 public class MessageListener extends Thread {
 	int port_num; // to be changed to a constant value
 	ServerSocket listener_socket;
+	MiddleWare mw;
 
-	public MessageListener(int port) {
+	public MessageListener(int port, MiddleWare mw) {
 		this.port_num = port;
+		this.mw = mw;
 		
 		try {
 			listener_socket = new ServerSocket(port_num);
@@ -32,7 +36,7 @@ public class MessageListener extends Thread {
 						new InputStreamReader(input));
 				int message = reader.read();
 				
-				//TODO send message to frontend
+				mw.transferData(message);
 				System.out.println("message that was received is: " + message);
 			}
 		} catch (IOException e) {
