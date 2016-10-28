@@ -1,6 +1,9 @@
 package frontend;
 
-public class WaitLogic implements ViewController {
+import backend.Player;
+import backend.PlayerPool;
+
+public class WaitLogic implements ViewController, PoolObserver {
 
 	private WaitCanvas wc;
 	private WindowFrame f;
@@ -8,6 +11,8 @@ public class WaitLogic implements ViewController {
 	public WaitLogic(WindowFrame f) {
 		this.f = f;
 		this.wc = new WaitCanvas(this);
+		
+		new PlayerPool(this).addSelf();
 	}
 	
 	@Override
@@ -15,8 +20,8 @@ public class WaitLogic implements ViewController {
 		return this.wc;
 	}
 	
-	public void startGame() {
+	public void startGame(Player me, Player opponent) {				
+		WindowFrame.configNetwroking(opponent.getHostname(), me.getCoin());
 		this.f.startGame();
 	}
-
 }

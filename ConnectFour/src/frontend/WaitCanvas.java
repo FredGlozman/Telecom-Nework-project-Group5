@@ -149,7 +149,8 @@ public class WaitCanvas extends Canvas {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Trigger this on Network signal instead of mouse press
-		this.wl.startGame();
+		//this.wl.startGame();
+		//triggering startGame in WaitLogic. triggered by the PlayerPool
 	}
 
 	@Override

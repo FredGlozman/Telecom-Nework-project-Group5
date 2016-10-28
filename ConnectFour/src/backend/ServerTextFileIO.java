@@ -33,7 +33,7 @@ public class ServerTextFileIO {
 	/**
 	 * @return the singleton instance of this class
 	 */
-	public static synchronized ServerTextFileIO getInstance() {
+	protected static synchronized ServerTextFileIO getInstance() {
 		if(instance == null) {
 			instance = new ServerTextFileIO();
 		}
@@ -44,7 +44,7 @@ public class ServerTextFileIO {
 	/**
 	 * @return the contents of the file
 	 */
-	public synchronized String read() {
+	protected synchronized String read() {
 		String contents = "";
 		
 		Scanner scanner = null;
@@ -74,7 +74,7 @@ public class ServerTextFileIO {
 	 * Overwrites the contents of the file
 	 * @param data string to write to the file
 	 */
-	public synchronized void write(String data) {
+	private synchronized void write(String data) {
 		PrintStream ps = null;
 		try {
 			URL url = new URL(PHP_URL);
@@ -102,7 +102,7 @@ public class ServerTextFileIO {
 	 * Appends a string to the end of the file
 	 * @param lineToAdd line to append to the file
 	 */
-	public synchronized void addLine(String lineToAdd) {
+	protected synchronized void addLine(String lineToAdd) {
 		lineToAdd = lineToAdd.trim();
 		
 		String fileContents = read().trim();
@@ -118,7 +118,7 @@ public class ServerTextFileIO {
 	 * Removes all instances of a specified line in the file
 	 * @param lineToRemove removes all lines in the file that match this line
 	 */
-	public synchronized void removeLine(String lineToRemove) {
+	protected synchronized void removeLine(String lineToRemove) {
 		String fileContents = read();	
 		if(fileContents == null || fileContents.equals("")) {
 			return;
@@ -140,7 +140,7 @@ public class ServerTextFileIO {
 	/**
 	 * Clears the contents of the file
 	 */
-	public synchronized void clear() {
+	protected synchronized void clear() {
 		write("");
 	}
 }

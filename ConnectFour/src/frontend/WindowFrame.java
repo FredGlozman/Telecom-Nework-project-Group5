@@ -3,13 +3,13 @@ package frontend;
 import javax.swing.JFrame;
 
 public class WindowFrame extends JFrame {
-	protected static final int CASE = 0; // 0 or 1 - two opponents must be in opposite states
+	protected static int CASE = 0; // 0 or 1 - two opponents must be in opposite states
 	
-	protected static final String IP = "localhost";
-	protected static final int PORT_1 = 8877 + CASE;
-	protected static final int PORT_2 = 8878 - CASE;
-	protected static final int USER_NUMBER = 1 + CASE;
-	protected static final boolean START = CASE == 0;
+	protected static String IP = "localhost";
+	protected static int PORT_1 = 9877 + CASE;
+	protected static int PORT_2 = 9878 - CASE;
+	protected static int USER_NUMBER = 1 + CASE;
+	protected static boolean START = CASE == 0;
 	
 	
 	private static final long serialVersionUID = -2938584211301935192L;
@@ -21,6 +21,15 @@ public class WindowFrame extends JFrame {
 
 	
 	public static final String TITLE = "Connect Four";
+	
+	public static void configNetwroking(String hostname, int coin) {
+		IP = hostname;
+		CASE = coin;
+		PORT_1 = 9877 + CASE;
+		PORT_2 = 9878 - CASE;
+		USER_NUMBER = 1 + CASE;
+		START = CASE == 0;
+	}
 	
 	public WindowFrame() {
 		setSize(WIDTH, HEIGHT);
