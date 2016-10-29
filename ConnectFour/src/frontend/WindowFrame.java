@@ -29,19 +29,9 @@ public class WindowFrame extends JFrame {
 		setTitle(TITLE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				switch (vID) {
-					case GameScreen:
-						(new MessageTransmitter(NetworkConfiguration.IP, QUIT_COLUMN, NetworkConfiguration.PORT_1)).start();
-						break;
-					case WaitScreen:
-						ServerTextFileIO.getInstance().clear();
-						break;
-				}
-				
-				System.exit(0);
+				exit();
 			}
 		});
-		waitForPlayers();
 	}
 	
 	public void startGame() {
@@ -53,7 +43,11 @@ public class WindowFrame extends JFrame {
 	}
 	
 	public void displayError(String errorMessage) {
-		// TODO
+		switchView(new ErrorLogic(this, errorMessage));
+	}
+	
+	public void displayCriticalError(String errorMessage) {
+		switchView(new ErrorLogic(this, errorMessage, ErrorSeverity.CRITICAL));
 	}
 	
 	private void switchView(ViewController v) {
@@ -61,6 +55,23 @@ public class WindowFrame extends JFrame {
 		this.vID = v.getID();
 		setContentPane(v.getCanvas());
 		setVisible(true);
+	}
+	
+	public void exit() {
+		switch (vID) {
+			case GAME:
+				(new MessageTransmitter(NetworkConfiguration.IP, QUIT_COLUMN, NetworkConfiguration.PORT_1)).start();
+				break;
+			case WAIT:
+				ServerTextFileIO.getInstance().clear();
+				break;
+			case ERROR:
+				break;
+			default:
+				break;
+		}
+		
+		System.exit(0);
 	}
 
 }

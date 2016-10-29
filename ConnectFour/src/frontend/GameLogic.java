@@ -219,14 +219,14 @@ public class GameLogic implements ViewController, MiddleWare {
 	@Override
 	public void transferData(int data) {
 		if (data == WindowFrame.QUIT_COLUMN) {
-			// TODO Go to error screen
+			this.f.displayError("Opponent has disconnected");
 			return;
 		}
-			
+		
 		receiveToken(data);
 	}
 	
 	public ViewID getID() {
-		return ViewID.GameScreen;
+		return ViewID.GAME;
 	}
 }

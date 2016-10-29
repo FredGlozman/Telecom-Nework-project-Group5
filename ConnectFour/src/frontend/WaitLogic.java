@@ -15,18 +15,18 @@ public class WaitLogic implements ViewController, PoolObserver {
 		new PlayerPool(this).addSelf();
 	}
 	
-	@Override
-	public Canvas getCanvas() {
-		return this.wc;
-	}
-	
 	public void startGame(Player me, Player opponent) {				
 		NetworkConfiguration.configNetwroking(opponent.getHostname(), me.getCoin());
 		this.f.startGame();
 	}
+	
+	@Override
+	public Canvas getCanvas() {
+		return this.wc;
+	}
 
 	@Override
 	public ViewID getID() {
-		return ViewID.WaitScreen;
+		return ViewID.WAIT;
 	}
 }
