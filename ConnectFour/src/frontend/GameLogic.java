@@ -26,7 +26,7 @@ public class GameLogic implements ViewController, MiddleWare {
 		this.positions = new int[7][6];
 		this.gc = new GameCanvas(this);
 		this.f = f;
-		this.ml = new MessageListener(WindowFrame.PORT_2, this);
+		this.ml = new MessageListener(NetworkConfiguration.PORT_2, this);
 		this.ml.start();
 		resetTimer();
 	}
@@ -46,7 +46,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 	
 	public void placeToken(int column) {
-		(new MessageTransmitter(WindowFrame.IP, column, WindowFrame.PORT_1)).start();
+		(new MessageTransmitter(NetworkConfiguration.IP, column, NetworkConfiguration.PORT_1)).start();
 		this.dropToken(column, this.userColor);
 	}
 	
@@ -218,6 +218,15 @@ public class GameLogic implements ViewController, MiddleWare {
 
 	@Override
 	public void transferData(int data) {
+		if (data == WindowFrame.QUIT_COLUMN) {
+			// TODO Go to error screen
+			return;
+		}
+			
 		receiveToken(data);
+	}
+	
+	public ViewID getID() {
+		return ViewID.GameScreen;
 	}
 }

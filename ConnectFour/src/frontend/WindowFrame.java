@@ -1,16 +1,15 @@
 package frontend;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 
+import backend.MessageTransmitter;
+import backend.ServerTextFileIO;
+
 public class WindowFrame extends JFrame {
-	protected static int CASE = 0; // 0 or 1 - two opponents must be in opposite states
-	
-	protected static String IP = "localhost";
-	protected static int PORT_1 = 9877 + CASE;
-	protected static int PORT_2 = 9878 - CASE;
-	protected static int USER_NUMBER = 1 + CASE;
-	protected static boolean START = CASE == 0;
-	
+	protected static final int QUIT_COLUMN = 7;
 	
 	private static final long serialVersionUID = -2938584211301935192L;
 
@@ -19,41 +18,49 @@ public class WindowFrame extends JFrame {
 	protected static final int WIDTH = 700; // edit this to change window size;
 	protected static final int HEIGHT = WIDTH; // edit at your own risk, usually works best as a square
 
-	
 	public static final String TITLE = "Connect Four";
 	
-	public static void configNetwroking(String hostname, int coin) {
-		IP = hostname;
-		CASE = coin;
-		PORT_1 = 9877 + CASE;
-		PORT_2 = 9878 - CASE;
-		USER_NUMBER = 1 + CASE;
-		START = CASE == 0;
-	}
+	private ViewID vID;
 	
 	public WindowFrame() {
 		setSize(WIDTH, HEIGHT);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setTitle(TITLE);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				switch (vID) {
+					case GameScreen:
+						(new MessageTransmitter(NetworkConfiguration.IP, QUIT_COLUMN, NetworkConfiguration.PORT_1)).start();
+						break;
+					case WaitScreen:
+						ServerTextFileIO.getInstance().clear();
+						break;
+				}
+				
+				System.exit(0);
+			}
+		});
 		waitForPlayers();
 	}
 	
 	public void startGame() {
-		setVisible(false);
-		setContentPane(new GameLogic(this, START, USER_NUMBER).getCanvas());
-		setVisible(true);
+		switchView(new GameLogic(this, NetworkConfiguration.START, NetworkConfiguration.USER_NUMBER));
 	}
 	
 	public void waitForPlayers() {
-		setVisible(false);
-		setContentPane(new WaitLogic(this).getCanvas());
-		setVisible(true);
+		switchView(new WaitLogic(this));
 	}
 	
-	public static void main(String[] args) {
-		new WindowFrame();
+	public void displayError(String errorMessage) {
+		// TODO
+	}
+	
+	private void switchView(ViewController v) {
+		setVisible(false);
+		this.vID = v.getID();
+		setContentPane(v.getCanvas());
+		setVisible(true);
 	}
 
 }

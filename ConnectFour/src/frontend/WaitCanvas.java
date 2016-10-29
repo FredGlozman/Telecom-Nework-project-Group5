@@ -61,6 +61,7 @@ public class WaitCanvas extends Canvas {
 	private Timer timer;
 	private int secondsWaited, fractionsOfASecondWaited;
 	
+	@SuppressWarnings("unused")
 	private WaitLogic wl;
 	
 	private static final long serialVersionUID = 4562861486690573984L;
@@ -147,11 +148,7 @@ public class WaitCanvas extends Canvas {
 	public void mouseExited(MouseEvent e) {}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Trigger this on Network signal instead of mouse press
-		//this.wl.startGame();
-		//triggering startGame in WaitLogic. triggered by the PlayerPool
-	}
+	public void mousePressed(MouseEvent e) {}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {}
