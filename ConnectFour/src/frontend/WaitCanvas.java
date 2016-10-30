@@ -10,6 +10,8 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 
 import javax.swing.Timer;
@@ -67,12 +69,11 @@ public class WaitCanvas extends Canvas {
 	private static final long serialVersionUID = 4562861486690573984L;
 	
 	public WaitCanvas(WaitLogic wl) {
+		super();
 		this.secondsWaited = 0;
 		this.fractionsOfASecondWaited = 0;
 		this.timer = new Timer(1000 / FPS, this);
 		this.wl = wl;
-		addMouseMotionListener(this);
-		addMouseListener(this);
 		timer.start();
 	}
 
@@ -168,5 +169,14 @@ public class WaitCanvas extends Canvas {
 		
 		return mins + ":" + secs;
 	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {}
+
+	@Override
+	public void keyReleased(KeyEvent e) {}
+
+	@Override
+	public void keyTyped(KeyEvent e) {}
 
 }

@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class ErrorCanvas extends Canvas {
@@ -48,9 +49,8 @@ public class ErrorCanvas extends Canvas {
 	private ErrorLogic el;
 	
 	public ErrorCanvas(ErrorLogic el) {
+		super();
 		this.el = el;
-		addMouseMotionListener(this);
-		addMouseListener(this);
 	}
 
 	@Override
@@ -122,5 +122,14 @@ public class ErrorCanvas extends Canvas {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {}
+
+	@Override
+	public void keyPressed(KeyEvent e) {}
+
+	@Override
+	public void keyReleased(KeyEvent e) {}
+
+	@Override
+	public void keyTyped(KeyEvent e) {}
 
 }

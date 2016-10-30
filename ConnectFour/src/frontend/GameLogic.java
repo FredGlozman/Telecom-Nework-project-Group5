@@ -1,7 +1,5 @@
 package frontend;
 
-import backend.*;
-
 public class GameLogic implements ViewController, MiddleWare {
 	
 	protected static final int TURN_TIME = 45; // time limit per turn in seconds
@@ -16,8 +14,6 @@ public class GameLogic implements ViewController, MiddleWare {
 	private WindowFrame f;
 	private int[][] positions;
 	
-	private MessageListener ml;
-	
 	public GameLogic(WindowFrame f, boolean userTurn, int userColor) {
 		this.userTurn = userTurn;
 		this.gameWinner = 0;
@@ -26,8 +22,7 @@ public class GameLogic implements ViewController, MiddleWare {
 		this.positions = new int[7][6];
 		this.gc = new GameCanvas(this);
 		this.f = f;
-		this.ml = new MessageListener(NetworkConfiguration.PORT_2, this);
-		this.ml.start();
+		MessageHandler.listen(this);
 		resetTimer();
 	}
 	
@@ -35,7 +30,7 @@ public class GameLogic implements ViewController, MiddleWare {
 		this.timeLeft = TURN_TIME * GameCanvas.FPS;
 	}
 	
-	// returns whether time is up
+	// returns time left
 	public int updateTimer() {
 		if (--this.timeLeft == 0) {
 			// TODO Synchronize to ensure both players agree
@@ -46,7 +41,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 	
 	public void placeToken(int column) {
-		(new MessageTransmitter(NetworkConfiguration.IP, column, NetworkConfiguration.PORT_1)).start();
+		MessageHandler.sendMessage(column);
 		this.dropToken(column, this.userColor);
 	}
 	
@@ -211,9 +206,8 @@ public class GameLogic implements ViewController, MiddleWare {
 		return this.gc;
 	}
 
-	public void rematch() {
-		this.ml.close();
-		this.f.waitForPlayers();
+	public void exit() {
+		this.f.insult(isWinner());
 	}
 
 	@Override

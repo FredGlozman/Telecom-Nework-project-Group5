@@ -21,7 +21,6 @@ public class MessageTransmitter extends Thread {
 		try {
 			transmit_socket = new Socket(host_name, port_num);
 			transmit_socket.getOutputStream().write(message);
-			System.out.println("message that was sent is: " + message);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {

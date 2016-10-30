@@ -78,6 +78,7 @@ public class GameCanvas extends Canvas {
 	private FallingToken fallingToken;
 	
 	public GameCanvas(GameLogic gl) {
+		super();
 		this.gl = gl;
 		this.positions = this.gl.getPositions();
 		this.selectedColumn = -1;
@@ -85,8 +86,6 @@ public class GameCanvas extends Canvas {
 		this.opponentColor = this.gl.getOpponentColor() == 1 ? TOKEN1_COLOR : TOKEN2_COLOR;
 		this.timer = new Timer(1000 / FPS, this);
 		createGrid();
-		addMouseMotionListener(this);
-		addMouseListener(this);
 		this.timer.start();
 	}
 	
@@ -247,7 +246,7 @@ public class GameCanvas extends Canvas {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (gl.getWinner() != 0) {
-			gl.rematch();
+			gl.exit();
 			return;
 		}
 		
@@ -296,5 +295,14 @@ public class GameCanvas extends Canvas {
 		
 		repaint();
 	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {}
+
+	@Override
+	public void keyReleased(KeyEvent e) {}
+
+	@Override
+	public void keyTyped(KeyEvent e) {}
 	
 }

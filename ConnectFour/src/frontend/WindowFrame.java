@@ -5,7 +5,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
-import backend.MessageTransmitter;
 import backend.ServerTextFileIO;
 
 public class WindowFrame extends JFrame {
@@ -50,6 +49,10 @@ public class WindowFrame extends JFrame {
 		switchView(new ErrorLogic(this, errorMessage, ErrorSeverity.CRITICAL));
 	}
 	
+	public void insult(boolean winner) {
+		switchView(new InsultLogic(this, winner));
+	}
+	
 	private void switchView(ViewController v) {
 		setVisible(false);
 		this.vID = v.getID();
@@ -60,12 +63,14 @@ public class WindowFrame extends JFrame {
 	public void exit() {
 		switch (vID) {
 			case GAME:
-				(new MessageTransmitter(NetworkConfiguration.IP, QUIT_COLUMN, NetworkConfiguration.PORT_1)).start();
+				MessageHandler.sendMessage(QUIT_COLUMN);				
 				break;
 			case WAIT:
 				ServerTextFileIO.getInstance().clear();
 				break;
 			case ERROR:
+				break;
+			case INSULT:
 				break;
 			default:
 				break;

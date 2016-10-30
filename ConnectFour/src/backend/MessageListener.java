@@ -24,6 +24,10 @@ public class MessageListener extends Thread {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public void setMiddleWare(MiddleWare mw) {
+		this.mw = mw;
+	}
 
 	public void run() {
 		Socket clientSocket;
@@ -35,10 +39,9 @@ public class MessageListener extends Thread {
 				int message = reader.read();
 				
 				mw.transferData(message);
-				System.out.println("message that was received is: " + message);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+//			throw new RuntimeException(e);
 		} finally {
 			close();
 		}
