@@ -2,7 +2,7 @@ package frontend;
 
 public class GameLogic implements ViewController, MiddleWare {
 	
-	protected static final int TURN_TIME = 3; // time limit per turn in seconds
+	protected static final int TURN_TIME = 45; // time limit per turn in seconds
 	
 	private int timeLeft;
 	

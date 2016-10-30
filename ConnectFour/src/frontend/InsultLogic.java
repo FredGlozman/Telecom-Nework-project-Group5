@@ -4,7 +4,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 
 	protected static final int MAX_INSULT_LENGTH = 32; // Maximum number of characters the insult can contain
 	protected static final int INSULT_TIME_LIMIT = 20; // Number of seconds the user has to type up their insult
-	protected static final int INSULT_DISPLAY_TIME = 5; // Number of seconds the loser is forced to see the insult for
+	protected static final int INSULT_DISPLAY_TIME = 7; // Number of seconds the loser is forced to see the insult for
 	
 	private InsultCanvas ic;
 	private WindowFrame f;
