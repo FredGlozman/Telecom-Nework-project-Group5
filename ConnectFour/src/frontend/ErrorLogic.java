@@ -1,6 +1,9 @@
 package frontend;
 
 public class ErrorLogic implements ViewController {
+	
+	protected static final String DISONNECT_MESSAGE = "Opponent has disconnected";
+	protected static final String TRANSFER_FAIL = "Could not send packet";
 
 	private ErrorCanvas ec;
 	private WindowFrame f;
@@ -57,6 +60,11 @@ public class ErrorLogic implements ViewController {
 	@Override
 	public ViewID getID() {
 		return ViewID.ERROR;
+	}
+
+	@Override
+	public void cleanUp() {
+		this.ec.cleanUp();
 	}
 
 }

@@ -2,7 +2,7 @@ package frontend;
 
 public class GameLogic implements ViewController, MiddleWare {
 	
-	protected static final int TURN_TIME = 45; // time limit per turn in seconds
+	protected static final int TURN_TIME = 3; // time limit per turn in seconds
 	
 	private int timeLeft;
 	
@@ -41,7 +41,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 	
 	public void placeToken(int column) {
-		MessageHandler.sendMessage(column);
+		MessageHandler.sendMessage(this, column);
 		this.dropToken(column, this.userColor);
 	}
 	
@@ -207,20 +207,39 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 
 	public void exit() {
+		MessageHandler.sendMessage(this, MessageHandler.GAME_OVER);
 		this.f.insult(isWinner());
 	}
 
 	@Override
 	public void transferData(int data) {
-		if (data == WindowFrame.QUIT_COLUMN) {
-			this.f.displayError("Opponent has disconnected");
+		if (data == MessageHandler.GAME_OVER) {
+			exit();
+			return;
+		}
+		
+		if (data == MessageHandler.DISCONNECT_SIGNAL) {
+			this.f.displayError(ErrorLogic.DISONNECT_MESSAGE);
 			return;
 		}
 		
 		receiveToken(data);
 	}
 	
+	@Override
+	public void transferFail() {
+		this.f.displayError(ErrorLogic.TRANSFER_FAIL);
+	}
+	
+	@Override
 	public ViewID getID() {
 		return ViewID.GAME;
+	}
+	
+	@Override
+	public void cleanUp() {
+		MessageHandler.sendDisconnect(this);
+		MessageHandler.closeMessageListener();
+		this.gc.cleanUp();
 	}
 }

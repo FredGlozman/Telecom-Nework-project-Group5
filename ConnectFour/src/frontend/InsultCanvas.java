@@ -77,10 +77,6 @@ public class InsultCanvas extends Canvas {
 		this.winner = this.il.isWinner();
 		timer.start();
 	}
-	
-	public void stop() {
-		timer.stop();
-	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -114,12 +110,13 @@ public class InsultCanvas extends Canvas {
 	}
 	
 	private void displayInsult(Graphics2D g2) {
+		String str = this.il.getInsult();
 		g2.setPaint(INSULT_COLOR);
 		g2.setFont(INSULT_FONT);
 		FontMetrics fm = g2.getFontMetrics();
-		int x = (int) (INSULT_LEFT_MARGIN * WindowFrame.WIDTH);
+		int x = (WindowFrame.WIDTH - fm.stringWidth(str)) / 2;
 		int y = (int) (fm.getAscent() + (WindowFrame.HEIGHT - (fm.getAscent() + fm.getDescent())) / 2 + VERTICAL_SPACING * WindowFrame.HEIGHT / 2);
-		g2.drawString(this.il.getInsult() + ((!this.il.insultAtMaxLength() && this.winner && this.showCursor) ? "_" : ""), x, y);
+		g2.drawString(str + ((!this.il.insultAtMaxLength() && this.winner && this.showCursor) ? "_" : ""), x, y);
 	}
 	
 	private void showHint(Graphics2D g2) {
@@ -208,4 +205,9 @@ public class InsultCanvas extends Canvas {
 	@Override
 	public void keyTyped(KeyEvent e) {}
 
+	@Override
+	public void cleanUp() {
+		super.cleanUp();
+		this.timer.stop();
+	}
 }

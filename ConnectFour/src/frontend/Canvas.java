@@ -28,4 +28,11 @@ public abstract class Canvas extends JPanel implements ActionListener, MouseList
 	protected static int adjustHeight(int x) {
 		return (x * WindowFrame.HEIGHT) / WindowFrame.DEFAULT_WIDTH_HEIGHT;
 	}
+	
+	public void cleanUp() {
+		setFocusable(false);
+		removeMouseMotionListener(this);
+		removeMouseListener(this);
+		removeKeyListener(this);
+	}
 }

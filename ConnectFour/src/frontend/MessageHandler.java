@@ -4,16 +4,22 @@ import backend.*;
 
 public class MessageHandler {
 	
-	private static final int ACK = 931;
+	protected static final int GAME_OVER = 22;
+	protected static final int ACK = 21;
+	protected static final int DISCONNECT_SIGNAL = 20;
 	
 	public static MessageListener ml;
 	
-	public static void sendMessage(int message) {
-		new MessageTransmitter(NetworkConfiguration.IP, message, NetworkConfiguration.PORT_1).start();
+	public static void sendMessage(MiddleWare mw, int message) {
+		new MessageTransmitter(NetworkConfiguration.IP, message, NetworkConfiguration.PORT_1, mw).start();
 	}
 
-	public static void sendAcknowledge() {
-		sendMessage(ACK);
+	public static void sendAcknowledge(MiddleWare mw) {
+		sendMessage(mw, ACK);
+	}
+	
+	public static void sendDisconnect(MiddleWare mw) {
+		sendMessage(mw, DISCONNECT_SIGNAL);
 	}
 	
 	public static MessageListener listen(MiddleWare mw) {

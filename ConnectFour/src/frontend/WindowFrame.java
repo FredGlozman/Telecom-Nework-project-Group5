@@ -5,11 +5,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
-import backend.ServerTextFileIO;
-
 public class WindowFrame extends JFrame {
-	protected static final int QUIT_COLUMN = 7;
-	
 	private static final long serialVersionUID = -2938584211301935192L;
 
 	protected static final int DEFAULT_WIDTH_HEIGHT = 1500; // do not change
@@ -19,7 +15,7 @@ public class WindowFrame extends JFrame {
 
 	public static final String TITLE = "Connect Four";
 	
-	private ViewID vID;
+	private ViewController vc;
 	
 	public WindowFrame() {
 		setSize(WIDTH, HEIGHT);
@@ -42,7 +38,10 @@ public class WindowFrame extends JFrame {
 	}
 	
 	public void displayError(String errorMessage) {
-		switchView(new ErrorLogic(this, errorMessage));
+		if (vc.getID() != ViewID.ERROR) {
+			vc.cleanUp();
+			switchView(new ErrorLogic(this, errorMessage));
+		}
 	}
 	
 	public void displayCriticalError(String errorMessage) {
@@ -53,29 +52,15 @@ public class WindowFrame extends JFrame {
 		switchView(new InsultLogic(this, winner));
 	}
 	
-	private void switchView(ViewController v) {
+	private void switchView(ViewController vc) {
 		setVisible(false);
-		this.vID = v.getID();
-		setContentPane(v.getCanvas());
+		this.vc = vc;
+		setContentPane(vc.getCanvas());
 		setVisible(true);
 	}
 	
 	public void exit() {
-		switch (vID) {
-			case GAME:
-				MessageHandler.sendMessage(QUIT_COLUMN);				
-				break;
-			case WAIT:
-				ServerTextFileIO.getInstance().clear();
-				break;
-			case ERROR:
-				break;
-			case INSULT:
-				break;
-			default:
-				break;
-		}
-		
+		vc.cleanUp();		
 		System.exit(0);
 	}
 

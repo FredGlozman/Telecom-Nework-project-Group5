@@ -4,7 +4,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 
 	protected static final int MAX_INSULT_LENGTH = 32; // Maximum number of characters the insult can contain
 	protected static final int INSULT_TIME_LIMIT = 20; // Number of seconds the user has to type up their insult
-	protected static final int INSULT_DISPLAY_TIME = 10; // Number of seconds the loser is forced to see the insult for
+	protected static final int INSULT_DISPLAY_TIME = 5; // Number of seconds the loser is forced to see the insult for
 	
 	private InsultCanvas ic;
 	private WindowFrame f;
@@ -71,7 +71,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 	
 	public void sendInsult() {
 		if (sendingIndex < insult.length())
-			MessageHandler.sendMessage(insult.charAt(sendingIndex++));
+			MessageHandler.sendMessage(this, insult.charAt(sendingIndex++));
 		else
 			exit();
 	}
@@ -96,7 +96,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 	
 	public void exit() {
 		MessageHandler.closeMessageListener();
-		this.ic.stop();
+		this.ic.cleanUp();
 		this.f.waitForPlayers();
 	}
 	
@@ -112,7 +112,16 @@ public class InsultLogic implements ViewController, MiddleWare {
 
 	@Override
 	public void transferData(int data) {
-		if (winner) {
+		if (data == MessageHandler.GAME_OVER) {
+			return;
+		}
+		
+		if (data == MessageHandler.DISCONNECT_SIGNAL) {
+			this.f.displayError(ErrorLogic.DISONNECT_MESSAGE);
+			return;
+		}
+		
+		if (winner && data == MessageHandler.ACK) {
 			sendInsult();
 		} else {
 			if (this.phase < 2) {
@@ -120,8 +129,20 @@ public class InsultLogic implements ViewController, MiddleWare {
 				clearInsult();
 			}
 			appendToInsult((char) data);
-			MessageHandler.sendAcknowledge();
+			MessageHandler.sendAcknowledge(this);
 		}
+	}
+	
+	@Override
+	public void transferFail() {
+		this.f.displayError(ErrorLogic.TRANSFER_FAIL);
+	}
+	
+	@Override
+	public void cleanUp() {
+		MessageHandler.sendDisconnect(this);
+		MessageHandler.closeMessageListener();
+		this.ic.cleanUp();
 	}
 
 }

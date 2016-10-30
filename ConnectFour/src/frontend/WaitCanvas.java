@@ -177,5 +177,11 @@ public class WaitCanvas extends Canvas {
 
 	@Override
 	public void keyTyped(KeyEvent e) {}
+	
+	@Override
+	public void cleanUp() {
+		super.cleanUp();
+		this.timer.stop();
+	}
 
 }

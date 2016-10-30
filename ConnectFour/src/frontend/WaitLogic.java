@@ -2,6 +2,7 @@ package frontend;
 
 import backend.Player;
 import backend.PlayerPool;
+import backend.ServerTextFileIO;
 
 public class WaitLogic implements ViewController, PoolObserver {
 
@@ -28,5 +29,10 @@ public class WaitLogic implements ViewController, PoolObserver {
 	@Override
 	public ViewID getID() {
 		return ViewID.WAIT;
+	}
+
+	@Override
+	public void cleanUp() {
+		ServerTextFileIO.getInstance().clear();
 	}
 }
