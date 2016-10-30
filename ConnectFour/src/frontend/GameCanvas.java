@@ -55,10 +55,7 @@ public class GameCanvas extends Canvas {
 	protected static final int WIN_LOSE_TEXT_BORDER_THICKNESS = 4;
 	protected static final int ADJUSTED_WIN_LOSE_TEXT_BORDER_THICKNESS = adjustWidth(WIN_LOSE_TEXT_BORDER_THICKNESS);
 	
-	//Strings
-	protected static final String WINNING_STRING = "YOU WIN!";
-	protected static final String DRAW_STRING = "DRAW!";
-	protected static final String LOSING_STRING = "YOU LOSE!";
+	// Text
 	protected static final int FONT_SIZE = 200;
 	protected static final int ADJUSTED_FONT_SIZE = adjustWidth(FONT_SIZE);
 	protected static final Font FONT = new Font("SansSerif", Font.BOLD, ADJUSTED_FONT_SIZE);
@@ -187,11 +184,11 @@ public class GameCanvas extends Canvas {
 	private void drawWinLose(Graphics2D g2) {
 		String str;		
 		if (this.gl.isWinner())
-			str = WINNING_STRING;
+			str = GameLogic.WINNING_STRING;
 		else if (this.gl.isDraw())
-			str = DRAW_STRING;
+			str = GameLogic.DRAW_STRING;
 		else
-			str = LOSING_STRING;
+			str = GameLogic.LOSING_STRING;
 		
 		g2.setFont(FONT);
 		FontMetrics fm = g2.getFontMetrics();

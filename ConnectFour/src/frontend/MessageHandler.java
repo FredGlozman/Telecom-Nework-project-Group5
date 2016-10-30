@@ -7,6 +7,7 @@ public class MessageHandler {
 	protected static final int GAME_OVER = 22;
 	protected static final int ACK = 21;
 	protected static final int DISCONNECT_SIGNAL = 20;
+	protected static final int NULL_SIGNAL = 19;
 	
 	public static MessageListener ml;
 	

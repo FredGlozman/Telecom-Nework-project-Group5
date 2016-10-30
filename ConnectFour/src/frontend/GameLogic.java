@@ -4,6 +4,10 @@ public class GameLogic implements ViewController, MiddleWare {
 	
 	protected static final int TURN_TIME = 45; // time limit per turn in seconds
 	
+	protected static final String WINNING_STRING = "YOU WIN";
+	protected static final String DRAW_STRING = "DRAW";
+	protected static final String LOSING_STRING = "YOU LOSE";
+	
 	private int timeLeft;
 	
 	private boolean userTurn;
@@ -223,7 +227,8 @@ public class GameLogic implements ViewController, MiddleWare {
 			return;
 		}
 		
-		receiveToken(data);
+		if (data >= 0 && data < 7)
+			receiveToken(data);
 	}
 	
 	@Override
