@@ -2,7 +2,6 @@ package frontend;
 
 import backend.Player;
 import backend.PlayerPool;
-import backend.ServerTextFileIO;
 
 public class WaitLogic implements ViewController, PoolObserver {
 

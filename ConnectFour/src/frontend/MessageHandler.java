@@ -13,7 +13,7 @@ public class MessageHandler {
 	public static MessageListener ml;
 	
 	public static void sendMessage(MiddleWare mw, int message) {
-		new MessageTransmitter(NetworkConfiguration.IP, message, NetworkConfiguration.PORT_1, mw).start();
+		MessageTransmitter.sendMessage(NetworkConfiguration.IP, message, NetworkConfiguration.PORT_1, mw)/*.start()*/;
 	}
 
 	public static void sendAcknowledge(MiddleWare mw) {
