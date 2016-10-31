@@ -119,6 +119,10 @@ public class ServerTextFileIO {
 	 * @param lineToRemove removes all lines in the file that match this line
 	 */
 	public synchronized void removeLine(String lineToRemove) {
+		removeLines(new String[]{lineToRemove});
+	}
+	
+	public void removeLines(String[] linesToRemove) {
 		String fileContents = read();	
 		if(fileContents == null || fileContents.equals("")) {
 			return;
@@ -128,7 +132,7 @@ public class ServerTextFileIO {
 		
 		fileContents = "";
 		for(String line : lines) {		
-			if(line != null && !line.equals("") && !line.equals(lineToRemove)) {
+			if(line != null && !line.equals("") && !arrayContainsLine(linesToRemove, line)) {
 				fileContents += line + "\n";
 			}
 		}
@@ -137,10 +141,14 @@ public class ServerTextFileIO {
 		write(fileContents);
 	}
 	
-	/**
-	 * Clears the contents of the file
-	 */
-	public synchronized void clear() {
-		write("");
+	private boolean arrayContainsLine(String[] array, String target) {
+		boolean contains = false;
+		for(String line : array) {
+			if(line.equals(target)) {
+				contains = true;
+				break;
+			}
+		}
+		return contains;
 	}
 }

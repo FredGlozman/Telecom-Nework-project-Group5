@@ -8,17 +8,30 @@ import frontend.PoolObserver;
 public class PlayerPool {
 	private final ServerTextFileIO file;
 	private final List<Player> pool;
-	
-	private final PoolObserver observer;
+	private Player self;
+		
+	private static PlayerPool instance; 
 	
 	/**
 	 * @param observer will get notified when a match is made 
 	 */
-	public PlayerPool(PoolObserver observer) {
-		this.observer = observer;
-		
+	private PlayerPool() {		
 		file = ServerTextFileIO.getInstance();
 		pool = new LinkedList<Player>();
+	}
+	
+	public static PlayerPool getInstance() {
+		if(instance == null) {
+			instance = new PlayerPool();
+		} 
+		
+		return instance;
+	}
+	
+	public void removeSelf() {
+		if(self != null) {
+			file.removeLine(self.toString());
+		}
 	}
 			
 	/**
@@ -27,7 +40,7 @@ public class PlayerPool {
 	 * If there are 2 players in the pool, need to wait before adding yourself to the pool. 
 	 * Will call back the observer when a match is made and are ready for game-play.
 	 */
-	public void addSelf() {
+	public void addSelf(PoolObserver observer) {
 		Thread adder = new Thread() {
 			public void run() {	
 				waitForAvailability(); //waits until there are less than 2 players in the pool
@@ -37,7 +50,8 @@ public class PlayerPool {
 					Player me = new Player();
 					file.addLine(me.toString());
 					
-					listen(me); //listen for another player to join the pool
+					self = me;
+					listen(observer, me); //listen for another player to join the pool
 				} 
 				//1 player is already in the pool. 
 				//add yourself to the pool but make sure your coin value is complementary to the player in the pool.
@@ -45,7 +59,8 @@ public class PlayerPool {
 					Player opponent = pool.get(0);
 					Player me = new Player(opponent);
 					file.addLine(me.toString());
-										
+					
+					self = me;
 					observer.startGame(me, opponent);
 				} 
 				//an error occurred. should have been waiting 
@@ -62,7 +77,7 @@ public class PlayerPool {
 	 * Wait for second player to connect
 	 * @param me my player info
 	 */
-	private void listen(Player me) {
+	private void listen(PoolObserver observer, Player me) {
 		Thread listener = new Thread() {
 			public void run() {
 		    	Player opponent = null; 
@@ -89,8 +104,8 @@ public class PlayerPool {
 			    	}
 		    	} while(opponent == null);
 		    			    	
-		    	file.clear(); //2 players have been matched. clear the pool to make room for other players.
-		    			    	
+		    	file.removeLines(new String[]{me.toString(), opponent.toString()});
+		    			
 		    	observer.startGame(me, opponent);
 		    }  
 		};

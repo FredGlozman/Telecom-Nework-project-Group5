@@ -13,7 +13,7 @@ public class WaitLogic implements ViewController, PoolObserver {
 		this.f = f;
 		this.wc = new WaitCanvas(this);
 		
-		new PlayerPool(this).addSelf();
+		PlayerPool.getInstance().addSelf(this);
 	}
 	
 	public void startGame(Player me, Player opponent) {				
@@ -33,6 +33,6 @@ public class WaitLogic implements ViewController, PoolObserver {
 
 	@Override
 	public void cleanUp() {
-		ServerTextFileIO.getInstance().clear();
+		PlayerPool.getInstance().removeSelf();
 	}
 }
