@@ -217,6 +217,7 @@ public class GameLogic implements ViewController, MiddleWare {
 
 	@Override
 	public void transferData(int data) {
+		System.out.println(data);
 		if (data == MessageHandler.GAME_OVER) {
 			exit();
 			return;
@@ -243,8 +244,12 @@ public class GameLogic implements ViewController, MiddleWare {
 	
 	@Override
 	public void cleanUp() {
-		MessageHandler.sendDisconnect(this);
 		MessageHandler.closeMessageListener();
 		this.gc.cleanUp();
+	}
+
+	@Override
+	public void disconnect() {
+		MessageHandler.sendDisconnect(this);
 	}
 }

@@ -67,4 +67,7 @@ public class ErrorLogic implements ViewController {
 		this.ec.cleanUp();
 	}
 
+	@Override
+	public void disconnect() {}
+
 }

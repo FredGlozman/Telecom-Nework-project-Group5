@@ -34,4 +34,7 @@ public class WaitLogic implements ViewController, PoolObserver {
 	public void cleanUp() {
 		PlayerPool.getInstance().removeSelf();
 	}
+
+	@Override
+	public void disconnect() {}
 }

@@ -60,7 +60,8 @@ public class WindowFrame extends JFrame {
 	}
 	
 	public void exit() {
-		vc.cleanUp();		
+		vc.disconnect();
+		vc.cleanUp();	
 		System.exit(0);
 	}
 

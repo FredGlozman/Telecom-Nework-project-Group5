@@ -37,7 +37,8 @@ public class MessageHandler {
 	}
 
 	public static void closeMessageListener() {
-		ml.close();
+		if (ml != null)
+			ml.close();
 		ml = null;
 	}
 }
