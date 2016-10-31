@@ -71,13 +71,17 @@ public class InsultLogic implements ViewController, MiddleWare {
 	}
 	
 	public void sendInsult() {
+		this.ic.stop();
+		
 		if (insult.length() == 0)
 			MessageHandler.sendMessage(this, MessageHandler.NULL_SIGNAL);
 		
-		if (sendingIndex < insult.length())
+		if (sendingIndex < insult.length()) {
 			MessageHandler.sendMessage(this, insult.charAt(sendingIndex++));
-		else
+		} else {
+			MessageHandler.sendMessage(this, MessageHandler.END_OF_STRING);
 			exit();
+		}
 	}
 	
 	public String getHeaderText() {
@@ -133,13 +137,16 @@ public class InsultLogic implements ViewController, MiddleWare {
 		
 		if (winner && data == MessageHandler.ACK) {
 			sendInsult();
-		} else {
+		} else if (data != MessageHandler.END_OF_STRING) {
 			if (this.phase < 2) {
 				setTimer(INSULT_DISPLAY_TIME);
+				this.ic.stop();
 				clearInsult();
 			}
 			appendToInsult((char) data);
 			MessageHandler.sendAcknowledge(this);
+		} else {
+			this.ic.resume();
 		}
 	}
 	

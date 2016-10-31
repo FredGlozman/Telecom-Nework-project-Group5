@@ -8,6 +8,7 @@ public class MessageHandler {
 	protected static final int ACK = 21;
 	protected static final int DISCONNECT_SIGNAL = 20;
 	protected static final int NULL_SIGNAL = 19;
+	protected static final int END_OF_STRING = 18;
 	
 	public static MessageListener ml;
 	

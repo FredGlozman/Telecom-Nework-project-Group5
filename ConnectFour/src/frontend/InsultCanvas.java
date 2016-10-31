@@ -205,9 +205,17 @@ public class InsultCanvas extends Canvas {
 	@Override
 	public void keyTyped(KeyEvent e) {}
 
+	public void stop() {
+		this.timer.stop();
+	}
+	
+	public void resume() {
+		this.timer.start();
+	}
+	
 	@Override
 	public void cleanUp() {
 		super.cleanUp();
-		this.timer.stop();
+		stop();
 	}
 }
