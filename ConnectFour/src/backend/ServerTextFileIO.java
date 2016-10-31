@@ -13,7 +13,7 @@ public class ServerTextFileIO {
 	private static final String SERVER_ROOT = "http://cs.mcgill.ca/";
 	private static final String SERVER_USER = "fglozm";
 
-	private static final String PHP_FILE = "file.php";
+	private static final String PHP_FILE = "write.php";
 	private static final String FILE_NAME = "data.txt";
 	
 	private static final String BASE_URL = SERVER_ROOT + "~" + SERVER_USER + "/";
