@@ -10,16 +10,16 @@ import java.net.Socket;
 import frontend.MiddleWare;
 
 public class MessageListener extends Thread {
-	private int port_num; 
-	private ServerSocket listener_socket;
+	private int port; 
+	private ServerSocket listenerSocket;
 	private MiddleWare mw;
 
 	public MessageListener(int port, MiddleWare mw) {
-		this.port_num = port;
+		this.port = port;
 		this.mw = mw;
 		
 		try {
-			listener_socket = new ServerSocket(port_num);
+			listenerSocket = new ServerSocket(this.port);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -32,7 +32,7 @@ public class MessageListener extends Thread {
 	public void run() {
 		Socket clientSocket;
 		try {
-			while ((clientSocket = listener_socket.accept()) != null) {
+			while ((clientSocket = listenerSocket.accept()) != null) {
 				InputStream input = clientSocket.getInputStream();
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(input));
@@ -41,7 +41,7 @@ public class MessageListener extends Thread {
 				mw.transferData(message);
 			}
 		} catch (IOException e) {
-//			throw new RuntimeException(e);
+			// throw new RuntimeException(e);
 		} finally {
 			close();
 		}
@@ -49,8 +49,8 @@ public class MessageListener extends Thread {
 
 	public void close() {
 		try {
-			if (listener_socket != null) {
-				listener_socket.close();
+			if (listenerSocket != null) {
+				listenerSocket.close();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
