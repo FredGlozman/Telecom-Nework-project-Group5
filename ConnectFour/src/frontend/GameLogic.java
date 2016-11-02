@@ -3,7 +3,6 @@ package frontend;
 public class GameLogic implements ViewController, MiddleWare {
 	
 	protected static final int TURN_TIME = 45; // time limit per turn in seconds
-	
 	protected static final String WINNING_STRING = "YOU WIN";
 	protected static final String DRAW_STRING = "DRAW";
 	protected static final String LOSING_STRING = "YOU LOSE";
@@ -38,11 +37,16 @@ public class GameLogic implements ViewController, MiddleWare {
 	public int updateTimer() {
 		if (--this.timeLeft == 0) {
 			// TODO Synchronize to ensure both players agree
-			this.gameWinner = userTurn ? opponentColor : userColor;
+			if(userTurn){
+				//this user's turn
+				MessageHandler.sendMessage(this, MessageHandler.TIME_OUT_SYNC);
+				this.gameWinner=opponentColor;
+			}
+			
 		}
-		
 		return this.timeLeft;
 	}
+	
 	
 	public void placeToken(int column) {
 		MessageHandler.sendMessage(this, column);
@@ -225,6 +229,9 @@ public class GameLogic implements ViewController, MiddleWare {
 		if (data == MessageHandler.DISCONNECT_SIGNAL) {
 			this.f.displayError(ErrorLogic.DISONNECT_MESSAGE);
 			return;
+		}
+		if(data==MessageHandler.TIME_OUT_SYNC){
+			this.gameWinner = userColor;
 		}
 		
 		if (data >= 0 && data < 7)

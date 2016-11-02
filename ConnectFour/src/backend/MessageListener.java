@@ -8,7 +8,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import frontend.MiddleWare;
-
+/**
+ 
+ * @author Group five- Telecom Network project
+ * This class handles message receiption
+ * All TCP connections
+ */
 public class MessageListener extends Thread {
 	private int port; 
 	private ServerSocket listenerSocket;
@@ -28,7 +33,7 @@ public class MessageListener extends Thread {
 	public void setMiddleWare(MiddleWare mw) {
 		this.mw = mw;
 	}
-
+	@Override
 	public void run() {
 		Socket clientSocket;
 		try {
@@ -43,6 +48,7 @@ public class MessageListener extends Thread {
 		} catch (IOException e) {
 			// throw new RuntimeException(e);
 		} finally {
+			//close connection once not needed
 			close();
 		}
 	}

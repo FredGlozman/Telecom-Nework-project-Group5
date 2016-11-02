@@ -4,7 +4,13 @@ import java.io.IOException;
 import java.net.Socket;
 
 import frontend.MiddleWare;
-
+/**
+ * 
+ *This class handles message transmission
+ *TCP connection
+ *an instance of this class is needed for every transmission
+ *
+ */
 public class MessageTransmitter {
 
 	public static void sendMessage(String hostName, int message, int port, MiddleWare mw) {
