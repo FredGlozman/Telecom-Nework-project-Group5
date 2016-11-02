@@ -4,12 +4,12 @@ import backend.*;
 
 public class MessageHandler {
 	
-	protected static final int TIME_OUT_SYNC=8;
 	protected static final int GAME_OVER = 22;
 	protected static final int ACK = 21;
 	protected static final int DISCONNECT_SIGNAL = 20;
 	protected static final int NULL_SIGNAL = 19;
 	protected static final int END_OF_STRING = 18;
+	protected static final int TIME_OUT_SYNC = 8;
 	
 	public static MessageListener ml;
 	
