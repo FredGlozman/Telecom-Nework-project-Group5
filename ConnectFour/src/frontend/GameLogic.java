@@ -3,12 +3,14 @@ package frontend;
 public class GameLogic implements ViewController, MiddleWare {
 	
 	protected static final int TURN_TIME = 45; // time limit per turn in seconds
+	protected static final int LEEWAY_TIME = 5; // grace time for the loser to acknowledge their loss in seconds
 	
 	protected static final String WINNING_STRING = "YOU WIN";
 	protected static final String DRAW_STRING = "DRAW";
 	protected static final String LOSING_STRING = "YOU LOSE";
 	
 	private int timeLeft;
+	private int leeway;
 	
 	private boolean userTurn;
 	private int gameWinner; // 0 = nobody
@@ -32,15 +34,21 @@ public class GameLogic implements ViewController, MiddleWare {
 	
 	private void resetTimer() {
 		this.timeLeft = TURN_TIME * GameCanvas.FPS;
+		this.leeway = LEEWAY_TIME * GameCanvas.FPS;
 	}
 	
 	// returns time left
 	public int updateTimer() {
 		if (this.timeLeft == 0) {
-			if (userTurn) {
-				//this user's turn
+			if (this.userTurn) {
 				MessageHandler.sendMessage(this, MessageHandler.TIME_OUT_SYNC);
 				this.gameWinner = opponentColor;
+			} else {
+				if (this.leeway == 0) {
+					this.f.displayError(ErrorLogic.DISONNECT_MESSAGE);
+				} else {
+					this.leeway--;
+				}
 			}
 		} else {
 			this.timeLeft--;
@@ -242,7 +250,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	
 	@Override
 	public void transferFail() {
-		this.f.displayError(ErrorLogic.TRANSFER_FAIL);
+		this.f.displayCriticalError(ErrorLogic.TRANSFER_FAIL);
 	}
 	
 	@Override
@@ -252,12 +260,17 @@ public class GameLogic implements ViewController, MiddleWare {
 	
 	@Override
 	public void cleanUp() {
-		MessageHandler.closeMessageListener();
+		MessageHandler.closeSockets();
 		this.gc.cleanUp();
 	}
 
 	@Override
 	public void disconnect() {
 		MessageHandler.sendDisconnect(this);
+		try {
+			Thread.sleep(MessageHandler.GRACE_PERIOD * 1000);
+		} catch (InterruptedException e) {
+			// whatever...
+		}
 	}
 }

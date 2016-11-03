@@ -6,6 +6,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 	protected static final int INSULT_TIME_LIMIT = 18; // Number of seconds the user has to type up their insult
 	protected static final int INSULT_DISPLAY_TIME = 7; // Number of seconds the loser is forced to see the insult for
 	protected static final int LOSER_EXTRA_TIME = 2; // Number of additional seconds for the loser to mix things up
+	protected static final int LEEWAY_TIME = 4; // Number of seconds granted to receive an acknowledge before quitting
 	
 	private InsultCanvas ic;
 	private WindowFrame f;
@@ -13,14 +14,12 @@ public class InsultLogic implements ViewController, MiddleWare {
 	private String insult;
 	private int timeLeft, timeSet;
 	private int phase;
-	private int sendingIndex;
 	
 	public InsultLogic(WindowFrame f, boolean winner) {
 		this.f = f;
 		this.winner = winner;
 		this.insult = new String();
 		this.phase = 0;
-		this.sendingIndex = 0;
 		this.setTimer(INSULT_TIME_LIMIT);
 		this.ic = new InsultCanvas(this);
 		MessageHandler.listen(this);
@@ -34,8 +33,14 @@ public class InsultLogic implements ViewController, MiddleWare {
 	// returns time left
 	public int updateTimer() {
 		if (--this.timeLeft == 0) {
-			exit();
+			if (this.winner)
+				MessageHandler.sendMessage(this, MessageHandler.NULL_SIGNAL);
+			else
+				exit();
 		}
+		
+		if (--this.timeLeft == -LEEWAY_TIME)
+			exit();
 		
 		return this.timeLeft;
 	}
@@ -73,15 +78,15 @@ public class InsultLogic implements ViewController, MiddleWare {
 	public void sendInsult() {
 		this.ic.stop();
 		
-		if (insult.length() == 0)
+		if (insult.length() == 0) {
 			MessageHandler.sendMessage(this, MessageHandler.NULL_SIGNAL);
-		
-		if (sendingIndex < insult.length()) {
-			MessageHandler.sendMessage(this, insult.charAt(sendingIndex++));
-		} else {
-			MessageHandler.sendMessage(this, MessageHandler.END_OF_STRING);
-			exit();
+			return;
 		}
+		
+		for (int sendingIndex = 0; sendingIndex < insult.length(); sendingIndex++)
+			MessageHandler.sendMessage(this, insult.charAt(sendingIndex));
+		
+		MessageHandler.sendMessage(this, MessageHandler.END_OF_STRING);		
 	}
 	
 	public String getHeaderText() {
@@ -103,7 +108,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 	}
 	
 	public void exit() {
-		MessageHandler.closeMessageListener();
+		MessageHandler.closeSockets();
 		this.ic.cleanUp();
 		this.f.waitForPlayers();
 	}
@@ -122,6 +127,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 	public void transferData(int data) {
 		// If the winner sent an empty message, halve the time remaining -- don't exit immediately to shuffle players around
 		if (!winner && data == MessageHandler.NULL_SIGNAL) {
+			MessageHandler.sendAcknowledge(this);
 			this.timeLeft = (this.timeLeft / 2) + 1;
 			return;
 		}
@@ -135,35 +141,45 @@ public class InsultLogic implements ViewController, MiddleWare {
 			return;
 		}
 		
-		if (winner && data == MessageHandler.ACK) {
-			sendInsult();
-		} else if (data != MessageHandler.END_OF_STRING) {
-			if (this.phase < 2) {
-				setTimer(INSULT_DISPLAY_TIME);
-				this.ic.stop();
-				clearInsult();
-			}
-			appendToInsult((char) data);
+		if (!winner && data == MessageHandler.END_OF_STRING) {
+			// this.ic.resume();
 			MessageHandler.sendAcknowledge(this);
-		} else {
-			this.ic.resume();
+			return;
 		}
+		
+		if (winner && data == MessageHandler.ACK) {
+			exit();
+			return;
+		}
+		
+		if (this.phase < 2) {
+				// this.ic.stop();
+				setTimer(INSULT_DISPLAY_TIME);
+				clearInsult();
+		}
+		
+		appendToInsult((char) data);
 	}
 	
 	@Override
 	public void transferFail() {
-		this.f.displayError(ErrorLogic.TRANSFER_FAIL);
+		this.f.displayCriticalError(ErrorLogic.TRANSFER_FAIL);
 	}
 	
 	@Override
 	public void cleanUp() {
-		MessageHandler.closeMessageListener();
+		MessageHandler.closeSockets();
 		this.ic.cleanUp();
 	}
 
 	@Override
 	public void disconnect() {
 		MessageHandler.sendDisconnect(this);
+		try {
+			Thread.sleep(MessageHandler.GRACE_PERIOD * 1000);
+		} catch (InterruptedException e) {
+			// whatever...
+		}
 	}
 
 }

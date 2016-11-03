@@ -1,7 +1,10 @@
 package backend;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 import frontend.MiddleWare;
 /**
@@ -11,25 +14,61 @@ import frontend.MiddleWare;
  *an instance of this class is needed for every transmission
  *
  */
-public class MessageTransmitter {
+public class MessageTransmitter extends Thread {
+	private Socket senderSocket;
+	private MiddleWare mw;
+	private Queue<Integer> messageQueue;
 
-	public static void sendMessage(String hostName, int message, int port, MiddleWare mw) {
-		Socket transmit_socket = null;
-		
+	public MessageTransmitter(String hostName, int port, MiddleWare mw) {
+		this.mw = mw;
+		this.messageQueue = new ArrayDeque<Integer>();
+
+		this.senderSocket = null;
 		try {
-			transmit_socket = new Socket(hostName, port);
-			transmit_socket.getOutputStream().write(message);
-		} catch (IOException e) {
+			this.senderSocket = new Socket(hostName, port);
+		} catch (Exception e) {
 			mw.transferFail();
-		} finally {
-			if(transmit_socket != null) {
-				try {
-					transmit_socket.close();
-				} catch(IOException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
-
+	
+	public void setMiddleWare(MiddleWare mw) {
+		this.mw = mw;
+	}
+	
+	@Override
+	public void run() {
+		try {
+			OutputStream out = this.senderSocket.getOutputStream();
+			while (this.senderSocket != null) {
+				synchronized (mw) {
+					if (!this.messageQueue.isEmpty()) {
+						int message = this.messageQueue.poll();
+						out.write(message);
+						out.flush();
+					}
+				}
+			}
+		} catch (Exception e) {
+			this.messageQueue.clear();
+			mw.transferFail();
+		} finally {
+			close();
+		}
+	}
+	
+	public void send(int message) {
+		this.messageQueue.offer(message);
+	}
+	
+	public void close() {
+		try {
+			if (this.senderSocket != null) {
+				while (!this.messageQueue.isEmpty());
+				this.senderSocket.close();
+				this.senderSocket = null;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

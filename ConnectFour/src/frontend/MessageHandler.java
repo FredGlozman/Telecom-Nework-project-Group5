@@ -4,6 +4,8 @@ import backend.*;
 
 public class MessageHandler {
 	
+	protected static final int GRACE_PERIOD = 1; // Time in seconds to send a disconnect signal
+	
 	protected static final int GAME_OVER = 22;
 	protected static final int ACK = 21;
 	protected static final int DISCONNECT_SIGNAL = 20;
@@ -11,10 +13,18 @@ public class MessageHandler {
 	protected static final int END_OF_STRING = 18;
 	protected static final int TIME_OUT_SYNC = 8;
 	
+	public static MessageTransmitter mt;
 	public static MessageListener ml;
 	
 	public static void sendMessage(MiddleWare mw, int message) {
-		MessageTransmitter.sendMessage(NetworkConfiguration.IP, message, NetworkConfiguration.PORT_1, mw)/*.start()*/;
+		if (mt == null) {
+			mt = new MessageTransmitter(NetworkConfiguration.IP, NetworkConfiguration.PORT_1, mw);
+			mt.start();
+		} else {
+			mt.setMiddleWare(mw);
+		}
+		
+		mt.send(message);
 	}
 
 	public static void sendAcknowledge(MiddleWare mw) {
@@ -37,9 +47,15 @@ public class MessageHandler {
 			
 	}
 
-	public static void closeMessageListener() {
-		if (ml != null)
+	public static void closeSockets() {
+		if (ml != null) {
 			ml.close();
-		ml = null;
+			ml = null;
+		}
+		
+		if (mt != null) {
+			mt.close();
+			mt = null;
+		}
 	}
 }

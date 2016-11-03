@@ -34,6 +34,8 @@ public class WindowFrame extends JFrame {
 	}
 	
 	public void waitForPlayers() {
+		if (vc != null)
+			vc.cleanUp();
 		switchView(new WaitLogic(this));
 	}
 	
@@ -61,7 +63,7 @@ public class WindowFrame extends JFrame {
 	
 	public void exit() {
 		vc.disconnect();
-		vc.cleanUp();	
+		vc.cleanUp();
 		System.exit(0);
 	}
 
