@@ -16,7 +16,7 @@ public class WaitLogic implements ViewController, PoolObserver {
 	}
 	
 	public void startGame(Player me, Player opponent) {				
-		NetworkConfiguration.configNetwroking(opponent.getHostname(), me.getCoin());
+		NetworkConfiguration.configNetworking(opponent.getHostname(), me.getCoin());
 		this.f.startGame();
 	}
 	

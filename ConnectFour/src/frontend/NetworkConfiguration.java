@@ -9,7 +9,7 @@ public class NetworkConfiguration {
 	protected static int USER_NUMBER = 1 + CASE;
 	protected static boolean START = CASE == 0;
 	
-	public static void configNetwroking(String hostname, int coin) {
+	public static void configNetworking(String hostname, int coin) {
 		IP = hostname;
 		CASE = coin;
 		PORT_1 = 9877 + CASE;
