@@ -13,13 +13,14 @@ public class ServerTextFileIO {
 	private static final String SERVER_ROOT = "http://cs.mcgill.ca/";
 	private static final String SERVER_USER = "fglozm";
 
-	private static final String PHP_FILE = "write.php";
-	private static final String FILE_NAME = "data.txt";
-	
+	private static final String PHP_WRITE_FILE = "write.php";
+	   private static final String PHP_DELETE_FILE = "delete.php";
+
 	private static final String BASE_URL = SERVER_ROOT + "~" + SERVER_USER + "/";
-	private static final String URL = BASE_URL + FILE_NAME;
-	private static final String PHP_URL = BASE_URL + PHP_FILE;
-		
+	
+	private static final String PHP_WRITE_URL = BASE_URL + PHP_WRITE_FILE;
+	  private static final String PHP_DELETE_URL = BASE_URL + PHP_DELETE_FILE;
+
 	private static ServerTextFileIO instance;
 
 	/**
@@ -41,14 +42,39 @@ public class ServerTextFileIO {
 		return instance;
 	}
 	
+	public synchronized void deleteFile(String fileName) {
+	    PrintStream ps = null;
+	    try {
+	        URL url = new URL(PHP_DELETE_URL);
+	        URLConnection con = url.openConnection();
+	        
+	        con.setDoOutput(true);
+	        ps = new PrintStream(con.getOutputStream());
+	        ps.print(fileName);
+
+	        con.getInputStream();
+	    } catch(IOException e) {
+	        throw new RuntimeException(e);
+	    } finally {
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch(Exception e) {
+                    //oh well...
+                }
+            }
+        }
+	}
+	
 	/**
 	 * @return the contents of the file
 	 */
-	public synchronized String read() {
+	public synchronized String read(String fileName) {
 		String contents = "";
 		
 		Scanner scanner = null;
 		try {
+		    String URL = BASE_URL + fileName; 
 			URL url = new URL(URL);
 			
 			scanner = new Scanner(url.openStream());
@@ -74,15 +100,15 @@ public class ServerTextFileIO {
 	 * Overwrites the contents of the file
 	 * @param data string to write to the file
 	 */
-	private synchronized void write(String data) {
+	private synchronized void write(String fileName, String data) {
 		PrintStream ps = null;
 		try {
-			URL url = new URL(PHP_URL);
+			URL url = new URL(PHP_WRITE_URL);
 			URLConnection con = url.openConnection();
 
 			con.setDoOutput(true);
 			ps = new PrintStream(con.getOutputStream());
-			ps.print(data);
+			ps.print(fileName + ":" +data);
 		 
 			con.getInputStream();
 		} catch (IOException e) {
@@ -102,28 +128,28 @@ public class ServerTextFileIO {
 	 * Appends a string to the end of the file
 	 * @param lineToAdd line to append to the file
 	 */
-	public synchronized void addLine(String lineToAdd) {
+	public synchronized void addLine(String fileName, String lineToAdd) {
 		lineToAdd = lineToAdd.trim();
 		
-		String fileContents = read().trim();
+		String fileContents = read(fileName).trim();
 		if(fileContents == null || fileContents.equals("")) {
 			fileContents = lineToAdd;
 		} else {
 			fileContents += "\n" + lineToAdd;
 		}
-		write(fileContents);
+		write(fileName, fileContents);
 	}
 	
 	/**
 	 * Removes all instances of a specified line in the file
 	 * @param lineToRemove removes all lines in the file that match this line
 	 */
-	public synchronized void removeLine(String lineToRemove) {
-		removeLines(new String[]{lineToRemove});
+	public synchronized void removeLine(String fileName, String lineToRemove) {
+		removeLines(fileName, new String[]{lineToRemove});
 	}
 	
-	public void removeLines(String[] linesToRemove) {
-		String fileContents = read();	
+	public void removeLines(String fileName, String[] linesToRemove) {
+		String fileContents = read(fileName);	
 		if(fileContents == null || fileContents.equals("")) {
 			return;
 		}
@@ -138,7 +164,7 @@ public class ServerTextFileIO {
 		}
 		fileContents.trim();
 					
-		write(fileContents);
+		write(fileName, fileContents);
 	}
 	
 	private boolean arrayContainsLine(String[] array, String target) {
