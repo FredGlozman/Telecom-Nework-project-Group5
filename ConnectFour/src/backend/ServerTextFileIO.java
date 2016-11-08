@@ -31,6 +31,30 @@ public class ServerTextFileIO {
 		
 	}
 	
+	private static void phpRequest(String URL, String input) {
+        PrintStream ps = null;
+        try {
+            URL url = new URL(URL);
+            URLConnection con = url.openConnection();
+
+            con.setDoOutput(true);
+            ps = new PrintStream(con.getOutputStream());
+            ps.print(input);
+         
+            con.getInputStream();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch(Exception e) {
+                    //oh well...
+                }
+            }
+        }
+	}
+	
 	/**
 	 * @return the singleton instance of this class
 	 */
@@ -42,28 +66,13 @@ public class ServerTextFileIO {
 		return instance;
 	}
 	
-	public synchronized void deleteFile(String fileName) {
-	    PrintStream ps = null;
-	    try {
-	        URL url = new URL(PHP_DELETE_URL);
-	        URLConnection con = url.openConnection();
-	        
-	        con.setDoOutput(true);
-	        ps = new PrintStream(con.getOutputStream());
-	        ps.print(fileName);
-
-	        con.getInputStream();
-	    } catch(IOException e) {
-	        throw new RuntimeException(e);
-	    } finally {
-            if(ps != null) {
-                try {
-                    ps.close();
-                } catch(Exception e) {
-                    //oh well...
-                }
-            }
-        }
+	public synchronized void delete(String fileName) {
+	    //protect for accidentally deleting the player pool
+	    if(fileName.equals(PlayerPool.PLAYER_POOL_FILE_NAME)) {
+	        throw new RuntimeException("Error, you are not allowed to delete the player pool.");
+	    }
+	    
+	    phpRequest(PHP_DELETE_URL, fileName);
 	}
 	
 	/**
@@ -101,27 +110,7 @@ public class ServerTextFileIO {
 	 * @param data string to write to the file
 	 */
 	private synchronized void write(String fileName, String data) {
-		PrintStream ps = null;
-		try {
-			URL url = new URL(PHP_WRITE_URL);
-			URLConnection con = url.openConnection();
-
-			con.setDoOutput(true);
-			ps = new PrintStream(con.getOutputStream());
-			ps.print(fileName + ":" +data);
-		 
-			con.getInputStream();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if(ps != null) {
-				try {
-					ps.close();
-				} catch(Exception e) {
-					//oh well...
-				}
-			}
-		}
+	    phpRequest(PHP_WRITE_URL, fileName + ":" +data);
 	}
 	
 	/**

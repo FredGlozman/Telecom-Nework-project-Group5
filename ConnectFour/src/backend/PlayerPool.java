@@ -10,7 +10,7 @@ public class PlayerPool {
 	private final List<Player> pool;
 	private Player self;
   
-	private static final String FILE_NAME = "PlayerPool.txt";
+	protected static final String PLAYER_POOL_FILE_NAME = "PlayerPool.txt";
 
 	private static PlayerPool instance; 
 	
@@ -32,7 +32,7 @@ public class PlayerPool {
 	
 	public void removeSelf() {
 		if(self != null) {
-			file.removeLine(FILE_NAME, self.toString());
+			file.removeLine(PLAYER_POOL_FILE_NAME, self.toString());
 		}
 	}
 			
@@ -50,7 +50,7 @@ public class PlayerPool {
 				//no player in the pool. add yourself to the pool.
 				if(pool.size() == 0) {
 					Player me = new Player();
-					file.addLine(FILE_NAME, me.toString());
+					file.addLine(PLAYER_POOL_FILE_NAME, me.toString());
 					
 					self = me;
 					listen(observer, me); //listen for another player to join the pool
@@ -60,7 +60,7 @@ public class PlayerPool {
 				else if(pool.size() == 1) {
 					Player opponent = pool.get(0);
 					Player me = new Player(opponent);
-					file.addLine(FILE_NAME, me.toString());
+					file.addLine(PLAYER_POOL_FILE_NAME, me.toString());
 					
 					self = me;
 					observer.startGame(me, opponent);
@@ -106,7 +106,7 @@ public class PlayerPool {
 			    	}
 		    	} while(opponent == null);
 		    			    	
-		    	file.removeLines(FILE_NAME, new String[]{me.toString(), opponent.toString()});
+		    	file.removeLines(PLAYER_POOL_FILE_NAME, new String[]{me.toString(), opponent.toString()});
 		    			
 		    	observer.startGame(me, opponent);
 		    }  
@@ -141,7 +141,7 @@ public class PlayerPool {
 	private void reloadPool() {
 		pool.clear();
 		
-		String content = file.read(FILE_NAME);
+		String content = file.read(PLAYER_POOL_FILE_NAME);
 		if(content != null && content.length()>0) {
 			for(String line : content.split("\n")) {
 				if(line != null && line.length() > 0 && line.split(",").length == 2) {
