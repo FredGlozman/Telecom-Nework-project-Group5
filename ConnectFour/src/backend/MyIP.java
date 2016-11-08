@@ -1,6 +1,10 @@
 package backend;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class MyIP {
@@ -11,8 +15,15 @@ public class MyIP {
 			return hardCodedIP;
 		
 		try {
-			return InetAddress.getLocalHost().getHostAddress();
+			InetAddress localHost = Inet4Address.getLocalHost();
+			NetworkInterface networkInterface = NetworkInterface.getByInetAddress(localHost);
+			InterfaceAddress interfaceAddress = networkInterface.getInterfaceAddresses().get(0);
+			String ip = interfaceAddress.getAddress().getHostAddress();
+			short mask = interfaceAddress.getNetworkPrefixLength();
+			return ip + "/" + mask;
 		} catch (UnknownHostException e) {
+			throw new RuntimeException(e);
+		} catch (SocketException e) {
 			throw new RuntimeException(e);
 		}
 	}

@@ -30,7 +30,7 @@ public class WindowFrame extends JFrame {
 	}
 	
 	public void startGame() {
-		switchView(new GameLogic(this, NetworkConfiguration.START, NetworkConfiguration.USER_NUMBER));
+		switchView(new GameLogic(this, NetworkConfiguration.isStarting, NetworkConfiguration.userNumber));
 	}
 	
 	public void waitForPlayers() {

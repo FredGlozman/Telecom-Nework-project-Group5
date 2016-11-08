@@ -14,12 +14,12 @@ public class ServerTextFileIO {
 	private static final String SERVER_USER = "fglozm";
 
 	private static final String PHP_WRITE_FILE = "write.php";
-	   private static final String PHP_DELETE_FILE = "delete.php";
+	private static final String PHP_DELETE_FILE = "delete.php";
 
 	private static final String BASE_URL = SERVER_ROOT + "~" + SERVER_USER + "/";
 	
 	private static final String PHP_WRITE_URL = BASE_URL + PHP_WRITE_FILE;
-	  private static final String PHP_DELETE_URL = BASE_URL + PHP_DELETE_FILE;
+	private static final String PHP_DELETE_URL = BASE_URL + PHP_DELETE_FILE;
 
 	private static ServerTextFileIO instance;
 

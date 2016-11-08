@@ -9,7 +9,7 @@ import frontend.MiddleWare;
 /**
  
  * @author Group five- Telecom Network project
- * This class handles message receiption
+ * This class handles message reception
  * All TCP connections
  */
 public class MessageListener extends Thread {

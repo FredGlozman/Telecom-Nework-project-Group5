@@ -18,7 +18,7 @@ public class MessageHandler {
 	
 	public static void sendMessage(MiddleWare mw, int message) {
 		if (mt == null) {
-			mt = new MessageTransmitter(NetworkConfiguration.IP, NetworkConfiguration.PORT_1, mw);
+			mt = new MessageTransmitter(NetworkConfiguration.ip, NetworkConfiguration.port1, mw);
 			mt.start();
 		} else {
 			mt.setMiddleWare(mw);
@@ -37,7 +37,7 @@ public class MessageHandler {
 	
 	public static MessageListener listen(MiddleWare mw) {
 		if (ml == null) {
-			ml = new MessageListener(NetworkConfiguration.PORT_2, mw);
+			ml = new MessageListener(NetworkConfiguration.port2, mw);
 			ml.start();
 		} else {
 			ml.setMiddleWare(mw);
