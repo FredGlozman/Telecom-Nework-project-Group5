@@ -27,14 +27,6 @@ public class MessageHandler {
 		mt.send(message);
 	}
 
-	public static void sendAcknowledge(MiddleWare mw) {
-		sendMessage(mw, ACK);
-	}
-	
-	public static void sendDisconnect(MiddleWare mw) {
-		sendMessage(mw, DISCONNECT_SIGNAL);
-	}
-	
 	public static MessageListener listen(MiddleWare mw) {
 		if (ml == null) {
 			ml = new MessageListener(NetworkConfiguration.port2, mw);

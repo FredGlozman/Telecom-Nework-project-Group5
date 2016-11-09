@@ -266,7 +266,7 @@ public class GameLogic implements ViewController, MiddleWare {
 
 	@Override
 	public void disconnect() {
-		MessageHandler.sendDisconnect(this);
+		MessageHandler.sendMessage(this, MessageHandler.DISCONNECT_SIGNAL);
 		try {
 			Thread.sleep(MessageHandler.GRACE_PERIOD * 1000);
 		} catch (InterruptedException e) {

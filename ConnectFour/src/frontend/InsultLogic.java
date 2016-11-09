@@ -127,7 +127,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 	public void transferData(int data) {
 		// If the winner sent an empty message, halve the time remaining -- don't exit immediately to shuffle players around
 		if (!winner && data == MessageHandler.NULL_SIGNAL) {
-			MessageHandler.sendAcknowledge(this);
+			MessageHandler.sendMessage(this, MessageHandler.ACK);
 			this.timeLeft = (this.timeLeft / 2) + 1;
 			return;
 		}
@@ -143,7 +143,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 		
 		if (!winner && data == MessageHandler.END_OF_STRING) {
 			// this.ic.resume();
-			MessageHandler.sendAcknowledge(this);
+			MessageHandler.sendMessage(this, MessageHandler.ACK);
 			return;
 		}
 		
@@ -153,9 +153,8 @@ public class InsultLogic implements ViewController, MiddleWare {
 		}
 		
 		if (this.phase < 2) {
-				// this.ic.stop();
-				setTimer(INSULT_DISPLAY_TIME);
-				clearInsult();
+			setTimer(INSULT_DISPLAY_TIME);
+			clearInsult();
 		}
 		
 		appendToInsult((char) data);
@@ -174,7 +173,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 
 	@Override
 	public void disconnect() {
-		MessageHandler.sendDisconnect(this);
+		MessageHandler.sendMessage(this, MessageHandler.DISCONNECT_SIGNAL);
 		try {
 			Thread.sleep(MessageHandler.GRACE_PERIOD * 1000);
 		} catch (InterruptedException e) {
