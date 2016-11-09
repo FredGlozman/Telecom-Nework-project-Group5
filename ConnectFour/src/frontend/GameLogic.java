@@ -20,6 +20,8 @@ public class GameLogic implements ViewController, MiddleWare {
 	private WindowFrame f;
 	private int[][] positions;
 	
+	private MessageHandler mh;
+	
 	public GameLogic(WindowFrame f, boolean userTurn, int userColor) {
 		this.userTurn = userTurn;
 		this.gameWinner = 0;
@@ -28,7 +30,8 @@ public class GameLogic implements ViewController, MiddleWare {
 		this.positions = new int[7][6];
 		this.gc = new GameCanvas(this);
 		this.f = f;
-		MessageHandler.listen(this);
+		this.mh = NetworkConfiguration.getMessageHandler();
+		this.mh.listen(this);
 		resetTimer();
 	}
 	
@@ -41,7 +44,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	public int updateTimer() {
 		if (this.timeLeft == 0) {
 			if (this.userTurn) {
-				MessageHandler.sendMessage(this, MessageHandler.TIME_OUT_SYNC);
+				this.mh.sendMessage(this, SocketMessageHandler.TIME_OUT_SYNC);
 				this.gameWinner = opponentColor;
 			} else {
 				if (this.leeway == 0) {
@@ -58,7 +61,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	
 	
 	public void placeToken(int column) {
-		MessageHandler.sendMessage(this, column);
+		this.mh.sendMessage(this, column);
 		this.dropToken(column, this.userColor);
 	}
 	
@@ -224,23 +227,23 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 
 	public void exit() {
-		MessageHandler.sendMessage(this, MessageHandler.GAME_OVER);
+		this.mh.sendMessage(this, SocketMessageHandler.GAME_OVER);
 		this.f.insult(isWinner());
 	}
 
 	@Override
 	public void transferData(int data) {
-		if (data == MessageHandler.GAME_OVER) {
+		if (data == SocketMessageHandler.GAME_OVER) {
 			exit();
 			return;
 		}
 		
-		if (data == MessageHandler.DISCONNECT_SIGNAL) {
+		if (data == SocketMessageHandler.DISCONNECT_SIGNAL) {
 			this.f.displayError(ErrorLogic.DISONNECT_MESSAGE);
 			return;
 		}
 		
-		if (data == MessageHandler.TIME_OUT_SYNC) {
+		if (data == SocketMessageHandler.TIME_OUT_SYNC) {
 			this.gameWinner = userColor;
 		}
 		
@@ -260,15 +263,15 @@ public class GameLogic implements ViewController, MiddleWare {
 	
 	@Override
 	public void cleanUp() {
-		MessageHandler.closeSockets();
+		this.mh.close();
 		this.gc.cleanUp();
 	}
 
 	@Override
 	public void disconnect() {
-		MessageHandler.sendMessage(this, MessageHandler.DISCONNECT_SIGNAL);
+		this.mh.sendMessage(this, SocketMessageHandler.DISCONNECT_SIGNAL);
 		try {
-			Thread.sleep(MessageHandler.GRACE_PERIOD * 1000);
+			Thread.sleep(SocketMessageHandler.GRACE_PERIOD * 1000);
 		} catch (InterruptedException e) {
 			// whatever...
 		}

@@ -15,6 +15,8 @@ public class InsultLogic implements ViewController, MiddleWare {
 	private int timeLeft, timeSet;
 	private int phase;
 	
+	private MessageHandler mh;
+	
 	public InsultLogic(WindowFrame f, boolean winner) {
 		this.f = f;
 		this.winner = winner;
@@ -22,7 +24,8 @@ public class InsultLogic implements ViewController, MiddleWare {
 		this.phase = 0;
 		this.setTimer(INSULT_TIME_LIMIT);
 		this.ic = new InsultCanvas(this);
-		MessageHandler.listen(this);
+		this.mh = NetworkConfiguration.getMessageHandler();
+		this.mh.listen(this);
 	}
 	
 	private void setTimer(int seconds) {
@@ -34,7 +37,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 	public int updateTimer() {
 		if (--this.timeLeft == 0) {
 			if (this.winner)
-				MessageHandler.sendMessage(this, MessageHandler.NULL_SIGNAL);
+				this.mh.sendMessage(this, SocketMessageHandler.NULL_SIGNAL);
 			else
 				exit();
 		}
@@ -79,14 +82,14 @@ public class InsultLogic implements ViewController, MiddleWare {
 		this.ic.stop();
 		
 		if (insult.length() == 0) {
-			MessageHandler.sendMessage(this, MessageHandler.NULL_SIGNAL);
+			this.mh.sendMessage(this, SocketMessageHandler.NULL_SIGNAL);
 			return;
 		}
 		
 		for (int sendingIndex = 0; sendingIndex < insult.length(); sendingIndex++)
-			MessageHandler.sendMessage(this, insult.charAt(sendingIndex));
+			this.mh.sendMessage(this, insult.charAt(sendingIndex));
 		
-		MessageHandler.sendMessage(this, MessageHandler.END_OF_STRING);		
+		this.mh.sendMessage(this, SocketMessageHandler.END_OF_STRING);		
 	}
 	
 	public String getHeaderText() {
@@ -108,7 +111,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 	}
 	
 	public void exit() {
-		MessageHandler.closeSockets();
+		this.mh.close();
 		this.ic.cleanUp();
 		this.f.waitForPlayers();
 	}
@@ -126,28 +129,27 @@ public class InsultLogic implements ViewController, MiddleWare {
 	@Override
 	public void transferData(int data) {
 		// If the winner sent an empty message, halve the time remaining -- don't exit immediately to shuffle players around
-		if (!winner && data == MessageHandler.NULL_SIGNAL) {
-			MessageHandler.sendMessage(this, MessageHandler.ACK);
+		if (!winner && data == SocketMessageHandler.NULL_SIGNAL) {
+			this.mh.sendMessage(this, SocketMessageHandler.ACK);
 			this.timeLeft = (this.timeLeft / 2) + 1;
 			return;
 		}
 
-		if (data == MessageHandler.GAME_OVER) {
+		if (data == SocketMessageHandler.GAME_OVER) {
 			return;
 		}
 		
-		if (data == MessageHandler.DISCONNECT_SIGNAL) {
+		if (data == SocketMessageHandler.DISCONNECT_SIGNAL) {
 			this.f.displayError(ErrorLogic.DISONNECT_MESSAGE);
 			return;
 		}
 		
-		if (!winner && data == MessageHandler.END_OF_STRING) {
-			// this.ic.resume();
-			MessageHandler.sendMessage(this, MessageHandler.ACK);
+		if (!winner && data == SocketMessageHandler.END_OF_STRING) {
+			this.mh.sendMessage(this, SocketMessageHandler.ACK);
 			return;
 		}
 		
-		if (winner && data == MessageHandler.ACK) {
+		if (winner && data == SocketMessageHandler.ACK) {
 			exit();
 			return;
 		}
@@ -167,18 +169,17 @@ public class InsultLogic implements ViewController, MiddleWare {
 	
 	@Override
 	public void cleanUp() {
-		MessageHandler.closeSockets();
+		this.mh.close();
 		this.ic.cleanUp();
 	}
 
 	@Override
 	public void disconnect() {
-		MessageHandler.sendMessage(this, MessageHandler.DISCONNECT_SIGNAL);
+		this.mh.sendMessage(this, SocketMessageHandler.DISCONNECT_SIGNAL);
 		try {
-			Thread.sleep(MessageHandler.GRACE_PERIOD * 1000);
+			Thread.sleep(SocketMessageHandler.GRACE_PERIOD * 1000);
 		} catch (InterruptedException e) {
 			// whatever...
 		}
 	}
-
 }
