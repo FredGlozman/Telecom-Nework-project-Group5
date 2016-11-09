@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class Player {
+    private final String fileName;
 	private final String hostname;
 	private final short mask;
 	private final int coin; //0 or 1
@@ -23,6 +24,7 @@ public class Player {
 		this.hostname = fullIP[0];
 		this.mask = Short.parseShort(fullIP[1]);
 		this.coin = inferCoin(opponent.getCoin());
+		this.fileName = generateFileName(this.hostname);
 	}
 	
 	/**
@@ -33,6 +35,7 @@ public class Player {
 		this.hostname = hostname;
 		this.mask = mask;
 		this.coin = coin;
+		this.fileName = generateFileName(this.hostname);
 	}
 	
 	/**
@@ -42,7 +45,7 @@ public class Player {
 	public Player(String playerInfo) {		
 		String[] components = playerInfo.split(",");
 		
-		if(components.length != 2) {
+		if(components.length != 3) {
 			throw new RuntimeException("Error, the player info: [" + playerInfo + "] has an unexpected format");
 		}
 	
@@ -55,6 +58,7 @@ public class Player {
 		this.hostname = fullIP[0];
 		this.mask = Short.parseShort(fullIP[1]);
 		this.coin = Integer.parseInt(components[1]);
+		this.fileName = components[2];
 	}
 		
 	/**
@@ -72,6 +76,7 @@ public class Player {
 		this.hostname = fullIP[0];
 		this.mask = Short.parseShort(fullIP[1]);
 		this.coin = coinFlip();
+		this.fileName = generateFileName(this.hostname);
 	}
 	
 	/**
@@ -154,7 +159,7 @@ public class Player {
 	 * format:hostname/mask,coinValue
 	 */
 	public String toString() {
-		return hostname + "/" + mask + "," + coin;
+		return hostname + "/" + mask + "," + coin + "," + fileName;
 	}
 	
 	/**
@@ -187,5 +192,11 @@ public class Player {
 		} else {
 			return 1;
 		}
+	}
+	
+	private String generateFileName(String IP) {
+	    String fileName = IP.replace(".", "-");
+	    int rand = (int) (Math.random() * 100000);
+	    return fileName + "-" + rand + ".txt";
 	}
 }
