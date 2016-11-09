@@ -1,5 +1,6 @@
 package backend;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URL;
@@ -110,7 +111,11 @@ public class ServerTextFileIO {
 	 * @param data string to write to the file
 	 */
 	private synchronized void write(String fileName, String data) {
-	    phpRequest(PHP_WRITE_URL, fileName + ":" +data);
+	    phpRequest(PHP_WRITE_URL, fileName + ":" + data);
+	}
+	
+	public synchronized void createFile(String fileName) {
+		write(fileName, new String());
 	}
 	
 	/**
@@ -165,5 +170,16 @@ public class ServerTextFileIO {
 			}
 		}
 		return contains;
+	}
+	
+	public boolean exists(String fileName) {
+		try {
+			read(fileName);
+			return true;
+		} catch (RuntimeException e) {
+			if (e.getCause() instanceof FileNotFoundException)
+				return false;
+			throw e;
+		}
 	}
 }
