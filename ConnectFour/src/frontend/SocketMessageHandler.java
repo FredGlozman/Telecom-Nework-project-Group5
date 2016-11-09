@@ -13,13 +13,24 @@ public class SocketMessageHandler implements MessageHandler {
 	protected static final int END_OF_STRING = 18;
 	protected static final int TIME_OUT_SYNC = 8;
 	
-	private MessageTransmitter mt;
-	private MessageListener ml;
+	private SocketMessageTransmitter mt;
+	private SocketMessageListener ml;
 	
+	private String ip;
+	private int port1;
+	private int port2;
+	
+	
+	public SocketMessageHandler(String hostname, int port1, int port2) {
+		this.ip = hostname;
+		this.port1 = port1;
+		this.port2 = port2;
+	}
+
 	@Override
 	public void sendMessage(MiddleWare mw, int message) {
 		if (mt == null) {
-			mt = new MessageTransmitter(NetworkConfiguration.ip, NetworkConfiguration.port1, mw);
+			mt = new SocketMessageTransmitter(ip, port1, mw);
 			mt.start();
 		} else {
 			mt.setMiddleWare(mw);
@@ -31,7 +42,7 @@ public class SocketMessageHandler implements MessageHandler {
 	@Override
 	public void listen(MiddleWare mw) {
 		if (ml == null) {
-			ml = new MessageListener(NetworkConfiguration.port2, mw);
+			ml = new SocketMessageListener(port2, mw);
 			ml.start();
 		} else {
 			ml.setMiddleWare(mw);

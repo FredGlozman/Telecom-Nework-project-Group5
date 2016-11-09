@@ -12,11 +12,11 @@ import frontend.MiddleWare;
  * This class handles message reception
  * All TCP connections
  */
-public class MessageListener extends Thread {
+public class SocketMessageListener extends Thread {
 	private ServerSocket listenerSocket;
 	private MiddleWare mw;
 
-	public MessageListener(int port, MiddleWare mw) {
+	public SocketMessageListener(int port, MiddleWare mw) {
 		this.mw = mw;
 		
 		try {

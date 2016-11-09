@@ -5,6 +5,8 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+import backend.Player;
+
 public class WindowFrame extends JFrame {
 	private static final long serialVersionUID = -2938584211301935192L;
 
@@ -29,8 +31,9 @@ public class WindowFrame extends JFrame {
 		});
 	}
 	
-	public void startGame() {
-		switchView(new GameLogic(this, NetworkConfiguration.isStarting, NetworkConfiguration.userNumber));
+	public void startGame(Player me, Player opponent) {
+		int coin = me.getCoin();
+		switchView(new GameLogic(this, coin == 0, coin + 1));
 	}
 	
 	public void waitForPlayers() {

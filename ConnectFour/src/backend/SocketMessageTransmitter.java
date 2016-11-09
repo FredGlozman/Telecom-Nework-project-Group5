@@ -14,12 +14,12 @@ import frontend.MiddleWare;
  *an instance of this class is needed for every transmission
  *
  */
-public class MessageTransmitter extends Thread {
+public class SocketMessageTransmitter extends Thread {
 	private Socket senderSocket;
 	private MiddleWare mw;
 	private Queue<Integer> messageQueue;
 
-	public MessageTransmitter(String hostName, int port, MiddleWare mw) {
+	public SocketMessageTransmitter(String hostName, int port, MiddleWare mw) {
 		this.mw = mw;
 		this.messageQueue = new ArrayDeque<Integer>();
 
