@@ -144,7 +144,7 @@ public class PlayerPool {
 		String content = file.read(PLAYER_POOL_FILE_NAME);
 		if(content != null && content.length()>0) {
 			for(String line : content.split("\n")) {
-				if(line != null && line.length() > 0 && line.split(",").length == 2) {
+				if(line != null && line.length() > 0) {
 					pool.add(new Player(line));
 				}
 			}
