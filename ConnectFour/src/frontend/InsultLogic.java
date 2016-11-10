@@ -22,10 +22,10 @@ public class InsultLogic implements ViewController, MiddleWare {
 		this.winner = winner;
 		this.insult = new String();
 		this.phase = 0;
-		this.setTimer(INSULT_TIME_LIMIT);
-		this.ic = new InsultCanvas(this);
 		this.mh = NetworkConfiguration.getMessageHandler();
 		this.mh.listen(this);
+		this.setTimer(INSULT_TIME_LIMIT);
+		this.ic = new InsultCanvas(this);
 	}
 	
 	private void setTimer(int seconds) {

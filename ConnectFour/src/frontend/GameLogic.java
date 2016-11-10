@@ -29,10 +29,10 @@ public class GameLogic implements ViewController, MiddleWare {
 		this.opponentColor = (userColor % 2) + 1; // 1 -> 2; 2 -> 1
 		this.positions = new int[7][6];
 		this.f = f;
-		resetTimer();
-		this.gc = new GameCanvas(this);
 		this.mh = NetworkConfiguration.getMessageHandler();
 		this.mh.listen(this);
+		resetTimer();
+		this.gc = new GameCanvas(this);
 	}
 	
 	private void resetTimer() {
