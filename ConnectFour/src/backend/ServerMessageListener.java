@@ -14,12 +14,13 @@ public class ServerMessageListener extends Thread {
 		
 		
 		ServerTextFileIO file = ServerTextFileIO.getInstance();
+		
 		try {
-			
 			if (file.exists(listeningFileName))
 				throw new RuntimeException("File being created already exists!");
 			
 			file.createFile(listeningFileName);
+			while (!file.exists(listeningFileName));
 			this.isOpen = true;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
