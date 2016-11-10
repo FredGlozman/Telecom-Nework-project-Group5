@@ -58,9 +58,9 @@ public class WindowFrame extends JFrame {
 	}
 	
 	private void switchView(ViewController vc) {
-		setVisible(false);
 		this.vc = vc;
 		setContentPane(vc.getCanvas());
+		setVisible(false);
 		setVisible(true);
 	}
 	

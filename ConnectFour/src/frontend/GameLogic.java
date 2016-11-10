@@ -44,7 +44,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	public int updateTimer() {
 		if (this.timeLeft == 0) {
 			if (this.userTurn) {
-				this.mh.sendMessage(this, SocketMessageHandler.TIME_OUT_SYNC);
+				this.mh.sendMessage(this, MessageHandler.TIME_OUT_SYNC);
 				this.gameWinner = opponentColor;
 			} else {
 				if (this.leeway == 0) {
@@ -227,23 +227,23 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 
 	public void exit() {
-		this.mh.sendMessage(this, SocketMessageHandler.GAME_OVER);
+		this.mh.sendMessage(this, MessageHandler.GAME_OVER);
 		this.f.insult(isWinner());
 	}
 
 	@Override
 	public void transferData(int data) {
-		if (data == SocketMessageHandler.GAME_OVER) {
+		if (data == MessageHandler.GAME_OVER) {
 			exit();
 			return;
 		}
 		
-		if (data == SocketMessageHandler.DISCONNECT_SIGNAL) {
+		if (data == MessageHandler.DISCONNECT_SIGNAL) {
 			this.f.displayError(ErrorLogic.DISONNECT_MESSAGE);
 			return;
 		}
 		
-		if (data == SocketMessageHandler.TIME_OUT_SYNC) {
+		if (data == MessageHandler.TIME_OUT_SYNC) {
 			this.gameWinner = userColor;
 		}
 		
@@ -269,9 +269,9 @@ public class GameLogic implements ViewController, MiddleWare {
 
 	@Override
 	public void disconnect() {
-		this.mh.sendMessage(this, SocketMessageHandler.DISCONNECT_SIGNAL);
+		this.mh.sendMessage(this, MessageHandler.DISCONNECT_SIGNAL);
 		try {
-			Thread.sleep(SocketMessageHandler.GRACE_PERIOD * 1000);
+			Thread.sleep(MessageHandler.GRACE_PERIOD * 1000);
 		} catch (InterruptedException e) {
 			// whatever...
 		}

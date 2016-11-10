@@ -37,7 +37,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 	public int updateTimer() {
 		if (--this.timeLeft == 0) {
 			if (this.winner)
-				this.mh.sendMessage(this, SocketMessageHandler.NULL_SIGNAL);
+				this.mh.sendMessage(this, MessageHandler.NULL_SIGNAL);
 			else
 				exit();
 		}
@@ -82,14 +82,14 @@ public class InsultLogic implements ViewController, MiddleWare {
 		this.ic.stop();
 		
 		if (insult.length() == 0) {
-			this.mh.sendMessage(this, SocketMessageHandler.NULL_SIGNAL);
+			this.mh.sendMessage(this, MessageHandler.NULL_SIGNAL);
 			return;
 		}
 		
 		for (int sendingIndex = 0; sendingIndex < insult.length(); sendingIndex++)
 			this.mh.sendMessage(this, insult.charAt(sendingIndex));
 		
-		this.mh.sendMessage(this, SocketMessageHandler.END_OF_STRING);		
+		this.mh.sendMessage(this, MessageHandler.END_OF_STRING);		
 	}
 	
 	public String getHeaderText() {
@@ -129,27 +129,27 @@ public class InsultLogic implements ViewController, MiddleWare {
 	@Override
 	public void transferData(int data) {
 		// If the winner sent an empty message, halve the time remaining -- don't exit immediately to shuffle players around
-		if (!winner && data == SocketMessageHandler.NULL_SIGNAL) {
-			this.mh.sendMessage(this, SocketMessageHandler.ACK);
+		if (!winner && data == MessageHandler.NULL_SIGNAL) {
+			this.mh.sendMessage(this, MessageHandler.ACK);
 			this.timeLeft = (this.timeLeft / 2) + 1;
 			return;
 		}
 
-		if (data == SocketMessageHandler.GAME_OVER) {
+		if (data == MessageHandler.GAME_OVER) {
 			return;
 		}
 		
-		if (data == SocketMessageHandler.DISCONNECT_SIGNAL) {
+		if (data == MessageHandler.DISCONNECT_SIGNAL) {
 			this.f.displayError(ErrorLogic.DISONNECT_MESSAGE);
 			return;
 		}
 		
-		if (!winner && data == SocketMessageHandler.END_OF_STRING) {
-			this.mh.sendMessage(this, SocketMessageHandler.ACK);
+		if (!winner && data == MessageHandler.END_OF_STRING) {
+			this.mh.sendMessage(this, MessageHandler.ACK);
 			return;
 		}
 		
-		if (winner && data == SocketMessageHandler.ACK) {
+		if (winner && data == MessageHandler.ACK) {
 			exit();
 			return;
 		}
@@ -175,9 +175,9 @@ public class InsultLogic implements ViewController, MiddleWare {
 
 	@Override
 	public void disconnect() {
-		this.mh.sendMessage(this, SocketMessageHandler.DISCONNECT_SIGNAL);
+		this.mh.sendMessage(this, MessageHandler.DISCONNECT_SIGNAL);
 		try {
-			Thread.sleep(SocketMessageHandler.GRACE_PERIOD * 1000);
+			Thread.sleep(MessageHandler.GRACE_PERIOD * 1000);
 		} catch (InterruptedException e) {
 			// whatever...
 		}

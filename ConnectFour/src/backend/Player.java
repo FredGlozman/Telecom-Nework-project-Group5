@@ -154,6 +154,10 @@ public class Player {
 		return this.coin;
 	}
 	
+	public String getFileName() {
+		return this.fileName;
+	}
+	
 	/**
 	 * Used for storing player information on server file.
 	 * format:hostname/mask,coinValue

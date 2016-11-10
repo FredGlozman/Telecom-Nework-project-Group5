@@ -12,7 +12,7 @@ public class NetworkConfiguration {
 		if (me.inSameSubnet(opponent))
 			mh = new SocketMessageHandler(opponent.getHostname(), 9877 + coin, 9878 - coin);
 		else
-			mh = new ServerMessageHandler();
+			mh = new ServerMessageHandler(opponent.getFileName(), me.getFileName());
 	}
 	
 	public static MessageHandler getMessageHandler() {

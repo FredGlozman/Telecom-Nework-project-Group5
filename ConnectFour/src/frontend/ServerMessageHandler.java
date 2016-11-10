@@ -1,23 +1,52 @@
 package frontend;
 
+import backend.ServerMessageListener;
+import backend.ServerMessageTransmitter;
+
 public class ServerMessageHandler implements MessageHandler {
 
+	private ServerMessageTransmitter mt;
+	private ServerMessageListener ml;
+	
+	private String writingFileName;
+	private String readingFileName;
+	
+	public ServerMessageHandler(String writingFileName, String readingFileName) {
+		this.writingFileName = writingFileName;
+		this.readingFileName = readingFileName;
+	}
+	
 	@Override
 	public void sendMessage(MiddleWare mw, int message) {
-		// TODO Auto-generated method stub
-
+		if (mt == null) {
+			mt = new ServerMessageTransmitter(writingFileName, mw);
+			mt.start();
+		} else {
+			mt.setMiddleWare(mw);
+		}
 	}
 
 	@Override
 	public void listen(MiddleWare mw) {
-		// TODO Auto-generated method stub
-
+		if (ml == null) {
+			ml = new ServerMessageListener(readingFileName, mw);
+			ml.start();
+		} else {
+			ml.setMiddleWare(mw);
+		}
 	}
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
-
+		if (ml != null) {
+			ml.close();
+			ml = null;
+		}
+		
+		if (mt != null) {
+			mt.close();
+			mt = null;
+		}
 	}
 
 }
