@@ -53,6 +53,7 @@ public class ServerMessageTransmitter extends Thread {
 			synchronized (mw) {
 				if (!this.messageQueue.isEmpty() && file.read(this.writingFileName).length() == 0) {
 					int message = this.messageQueue.poll();
+					System.out.println("Outgoing message: " + ((char) message) + "/" + message);
 					file.addLine(this.writingFileName, new Integer(message).toString());
 				}
 			}

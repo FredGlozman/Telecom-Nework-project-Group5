@@ -38,6 +38,7 @@ public class ServerMessageListener extends Thread {
 		while (this.isOpen) {
 			String message = file.read(this.listeningFileName);
 			if (message != null && message.length() > 0) {
+				System.out.println("Incoming message: " + ((char) Integer.parseInt(message)) + "/" + message);
 				file.removeLine(this.listeningFileName, message);
 				mw.transferData(Integer.parseInt(message));
 			}
