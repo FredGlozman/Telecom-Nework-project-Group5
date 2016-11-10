@@ -146,6 +146,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 		
 		if (!winner && data == MessageHandler.END_OF_STRING) {
 			this.mh.sendMessage(this, MessageHandler.ACK);
+			this.ic.resume();
 			return;
 		}
 		
@@ -155,6 +156,7 @@ public class InsultLogic implements ViewController, MiddleWare {
 		}
 		
 		if (this.phase < 2) {
+			this.ic.stop();
 			setTimer(INSULT_DISPLAY_TIME);
 			clearInsult();
 		}
