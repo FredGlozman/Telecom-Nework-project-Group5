@@ -59,9 +59,13 @@ public class ServerMessageTransmitter extends Thread {
 			try {
 				Thread.sleep(FILE_WRITE_SLEEP_TIME_MS);
 			} catch (InterruptedException e) {
-				//woopdydoo
+				// oh well...
 			}
 		}
+	}
+	
+	public void send(int message) {
+		this.messageQueue.offer(message);
 	}
 	
 	public void close() {

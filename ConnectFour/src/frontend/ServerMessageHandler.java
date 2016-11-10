@@ -24,6 +24,8 @@ public class ServerMessageHandler implements MessageHandler {
 		} else {
 			mt.setMiddleWare(mw);
 		}
+		
+		mt.send(message);
 	}
 
 	@Override
