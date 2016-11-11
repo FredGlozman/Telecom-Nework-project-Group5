@@ -13,6 +13,8 @@ import frontend.MiddleWare;
  * All TCP connections
  */
 public class SocketMessageListener extends Thread {
+	protected static final int SOCKET_READ_SLEEP_TIME_MS = 10;
+	
 	private ServerSocket listenerSocket;
 	private MiddleWare mw;
 
@@ -40,7 +42,11 @@ public class SocketMessageListener extends Thread {
 				if (message == -1)
 					return;
 				mw.transferData(message);
+				
+				Thread.sleep(SOCKET_READ_SLEEP_TIME_MS);
 			}
+		} catch (InterruptedException e) {
+			// oh well...
 		} catch (Exception e) {
 			// do nothing
 		} finally {

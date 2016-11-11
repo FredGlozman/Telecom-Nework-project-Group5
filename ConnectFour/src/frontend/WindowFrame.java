@@ -43,14 +43,18 @@ public class WindowFrame extends JFrame {
 	}
 	
 	public void displayError(String errorMessage) {
-		if (vc.getID() != ViewID.ERROR) {
-			vc.cleanUp();
-			switchView(new ErrorLogic(this, errorMessage));
-		}
+		displayError(errorMessage, ErrorSeverity.NORMAL);
 	}
 	
 	public void displayCriticalError(String errorMessage) {
-		switchView(new ErrorLogic(this, errorMessage, ErrorSeverity.CRITICAL));
+		displayError(errorMessage, ErrorSeverity.CRITICAL);
+	}
+	
+	private void displayError(String errorMessage, ErrorSeverity errorSeverity) {
+		if (vc.getID() != ViewID.ERROR) {
+			vc.cleanUp();
+			switchView(new ErrorLogic(this, errorMessage, errorSeverity));
+		}
 	}
 	
 	public void insult(boolean winner) {

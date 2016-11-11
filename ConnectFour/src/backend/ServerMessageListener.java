@@ -3,6 +3,8 @@ package backend;
 import frontend.MiddleWare;
 
 public class ServerMessageListener extends Thread {
+	protected static final int FILE_READ_SLEEP_TIME_MS = 50;
+	
 	private MiddleWare mw;
 	private String listeningFileName;
 	private boolean isOpen;
@@ -35,20 +37,36 @@ public class ServerMessageListener extends Thread {
 	public void run() {
 		ServerTextFileIO file = ServerTextFileIO.getInstance();
 		
-		while (this.isOpen) {
-			String message = file.read(this.listeningFileName);
-			if (message != null && message.length() > 0) {
-				System.out.println("Incoming message: " + ((char) Integer.parseInt(message)) + "/" + message);
-				file.removeLine(this.listeningFileName, message);
-				mw.transferData(Integer.parseInt(message));
+		try {
+			while (this.isOpen) {
+				String message = file.read(this.listeningFileName);
+				
+				if (message != null && message.length() > 0) {
+					System.out.println("Incoming message: " + ((char) Integer.parseInt(message)) + "/" + message);
+					file.removeLine(this.listeningFileName, message);
+					mw.transferData(Integer.parseInt(message));
+				}
+
+				Thread.sleep(FILE_READ_SLEEP_TIME_MS);
+				
 			}
+		} catch (InterruptedException e) {
+			// oh well...
+		} catch (Exception e) {
+			// do nothing
+		} finally {
+			close();
 		}
 	}
 	
 	public void close() {
 		ServerTextFileIO file = ServerTextFileIO.getInstance();
 		
-		file.delete(this.listeningFileName);
+		synchronized (mw) {
+			if (file.exists(this.listeningFileName))
+				file.delete(this.listeningFileName);
+		}
+		
 		this.isOpen = false;
 	}
 }

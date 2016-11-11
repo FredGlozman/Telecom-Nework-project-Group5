@@ -15,6 +15,8 @@ import frontend.MiddleWare;
  *
  */
 public class SocketMessageTransmitter extends Thread {
+	protected static final int SOCKET_WRITE_SLEEP_TIME_MS = 10;
+	
 	private Socket senderSocket;
 	private MiddleWare mw;
 	private Queue<Integer> messageQueue;
@@ -45,9 +47,13 @@ public class SocketMessageTransmitter extends Thread {
 						int message = this.messageQueue.poll();
 						out.write(message);
 						out.flush();
-					}
+					}					
 				}
+				
+				Thread.sleep(SOCKET_WRITE_SLEEP_TIME_MS);
 			}
+		} catch (InterruptedException e) {
+			// oh well...
 		} catch (Exception e) {
 			this.messageQueue.clear();
 			mw.transferFail();

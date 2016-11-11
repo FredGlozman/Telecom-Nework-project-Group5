@@ -49,19 +49,32 @@ public class ServerMessageTransmitter extends Thread {
 	public void run() {
 		ServerTextFileIO file = ServerTextFileIO.getInstance();
 		
-		while (this.isOpen) {
-			synchronized (mw) {
-				if (!this.messageQueue.isEmpty() && file.read(this.writingFileName).length() == 0) {
-					int message = this.messageQueue.poll();
-					System.out.println("Outgoing message: " + ((char) message) + "/" + message);
-					file.addLine(this.writingFileName, new Integer(message).toString());
+		try {
+			while (this.isOpen) {
+				synchronized (mw) {
+					boolean areElementsQueued = !this.messageQueue.isEmpty();
+					
+					if (!file.exists(this.writingFileName)) {
+						if (areElementsQueued)
+							throw new RuntimeException("Writing file no longer exists.");
+						close();
+					}
+					
+					if (areElementsQueued && file.read(this.writingFileName).length() == 0) {
+						int message = this.messageQueue.poll();
+						System.out.println("Outgoing message: " + ((char) message) + "/" + message);
+						file.addLine(this.writingFileName, new Integer(message).toString());
+					}
 				}
-			}
-			try {
 				Thread.sleep(FILE_WRITE_SLEEP_TIME_MS);
-			} catch (InterruptedException e) {
-				// oh well...
 			}
+		} catch (InterruptedException e) {
+			// oh well...
+		} catch (Exception e) {
+			this.messageQueue.clear();
+			this.mw.transferFail();
+		} finally {
+			close();
 		}
 	}
 	
