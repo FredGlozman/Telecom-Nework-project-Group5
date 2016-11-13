@@ -134,15 +134,32 @@ public class PlayerPool {
 	 * @return content of the file once it contains less than 2 players
 	 */
 	private void waitForAvailability() {	
+	    final int maxWaitTime = 5000; // 5 seconds
+	    final int waitTime = 500;     // 1/2 seconds
+	    int totalWaitTime = 0;
+	    
 		boolean first = true;
 		do {
+		    //no need to wait before loading the file for the first time
 			if(!first) {
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					throw new RuntimeException(e);
-				}
-				first = false;
+			    if(totalWaitTime < maxWaitTime) {
+    				try {
+    					Thread.sleep(waitTime);
+    					totalWaitTime += waitTime;
+    				} catch (InterruptedException e) {
+    					throw new RuntimeException(e);
+    				}
+			    } 
+			    //file has had 2 or more players for maxWaitTime ms. 
+			    //those players should have been matched and removed from the pool by now.
+			    //there must have been an error in a previous execution. clear the file and continue.
+			    else {
+			        file.clear(PLAYER_POOL_FILE_NAME);
+			        pool.clear();
+			        break;
+			    }
+			} else {
+			    first = false;
 			}
 
 			reloadPool();
