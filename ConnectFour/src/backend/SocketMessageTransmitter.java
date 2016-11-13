@@ -7,12 +7,9 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import frontend.MiddleWare;
+
 /**
- * 
- *This class handles message transmission
- *TCP connection
- *an instance of this class is needed for every transmission
- *
+ * Handles socket message transmission. All connections are TCP.
  */
 public class SocketMessageTransmitter extends Thread {
 	protected static final int SOCKET_WRITE_SLEEP_TIME_MS = 10;
@@ -21,6 +18,12 @@ public class SocketMessageTransmitter extends Thread {
 	private MiddleWare mw;
 	private Queue<Integer> messageQueue;
 
+	/**
+	 * Constructor: initializes this transmitting socket at a given port and destined to a specific hostname.
+	 * @param hostName Hostname messages will be transmitted to (opponent's IPv4 address).
+	 * @param port Port number on which socket will be opened.
+	 * @param mw Means of communicating the information with the front-end.
+	 */
 	public SocketMessageTransmitter(String hostName, int port, MiddleWare mw) {
 		this.mw = mw;
 		this.messageQueue = new ArrayDeque<Integer>();
@@ -33,10 +36,18 @@ public class SocketMessageTransmitter extends Thread {
 		}
 	}
 	
+	/**
+	 * In case the view changes and the same message transmitter is needed, use this method.
+	 * @param mw New means of interfacing with the front-end.
+	 */
 	public void setMiddleWare(MiddleWare mw) {
 		this.mw = mw;
 	}
 	
+	/**
+	 * Constantly check the message queue, if it is not empty, write it to the transmission stream and
+	 * flush it. Then wait and try again. Stop when the transmission socket is closed.
+	 */
 	@Override
 	public void run() {
 		try {
@@ -50,22 +61,36 @@ public class SocketMessageTransmitter extends Thread {
 					}					
 				}
 				
+				// Very often, but not too often.
 				Thread.sleep(SOCKET_WRITE_SLEEP_TIME_MS);
 			}
 		} catch (InterruptedException e) {
 			// oh well...
 		} catch (Exception e) {
-			this.messageQueue.clear();
-			mw.transferFail();
+			error();
 		} finally {
+			// Always close the transmission socket.
 			close();
 		}
 	}
 	
+	/**
+	 * Function to be called when a message is to be sent. Queues it up for transmission.
+	 * @param message Message to be transmitted.
+	 */
 	public void send(int message) {
+		// If there is no socket to write to, error out.
+		if (this.senderSocket == null) {
+			error();
+			return;
+		}
+		
 		this.messageQueue.offer(message);
 	}
 	
+	/**
+	 * Finish emptying up the queue and close the socket.
+	 */
 	public void close() {
 		try {
 			if (this.senderSocket != null) {
@@ -74,7 +99,15 @@ public class SocketMessageTransmitter extends Thread {
 				this.senderSocket = null;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
+	}
+	
+	/**
+	 * If something goes horribly wrong, clear the queue and notify the user.
+	 */
+	private void error() {
+		this.messageQueue.clear();
+		this.mw.transferFail();
 	}
 }

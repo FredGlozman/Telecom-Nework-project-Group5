@@ -5,6 +5,12 @@ import java.util.List;
 
 import frontend.PoolObserver;
 
+/**
+ * Singlton class player pool from which opponents will be picked and matches will be made. The player pool
+ * is a text file hosted on Fred Glozman's SOCS server where stringified players are inserted. When a player
+ * gets in queue, they add themself to the file, and when they find another player and a match is made,
+ * they both get removed.
+ */
 public class PlayerPool {
 	private final ServerTextFileIO file;
 	private final List<Player> pool;
@@ -15,6 +21,7 @@ public class PlayerPool {
 	private static PlayerPool instance; 
 	
 	/**
+	 * Private constructor to enforce singleton pattern.
 	 * @param observer will get notified when a match is made 
 	 */
 	private PlayerPool() {		
@@ -22,6 +29,10 @@ public class PlayerPool {
 		pool = new LinkedList<Player>();
 	}
 	
+	/**
+	 * Following the singleton pattern (lazy evaluation).
+	 * @return Instance of PlayerPool.
+	 */
 	public static PlayerPool getInstance() {
 		if(instance == null) {
 			instance = new PlayerPool();
@@ -30,6 +41,9 @@ public class PlayerPool {
 		return instance;
 	}
 	
+	/**
+	 * Remove yourself from the player pool.
+	 */
 	public void removeSelf() {
 		if(self != null) {
 			file.removeLine(PLAYER_POOL_FILE_NAME, self.toString());

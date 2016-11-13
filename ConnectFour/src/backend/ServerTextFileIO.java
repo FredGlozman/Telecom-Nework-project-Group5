@@ -8,7 +8,7 @@ import java.net.URLConnection;
 import java.util.Scanner;
 
 /**
- * Singleton class that reads from and writes to a file hosted on a McGill server
+ * Singleton class that reads from and writes to a file hosted on a McGill server.
  */
 public class ServerTextFileIO {	
 	private static final String SERVER_ROOT = "http://cs.mcgill.ca/";
@@ -28,14 +28,17 @@ public class ServerTextFileIO {
 	 * Private constructor to ensure that users can't create 
 	 * multiple instances of this class. 
 	 */
-	private ServerTextFileIO() {
-		
-	}
+	private ServerTextFileIO() {}
 	
-	private static void phpRequest(String URL, String input) {
+	/**
+	 * Send a PHP request to a specific script.
+	 * @param urlString URL as a string indicating where the PHP file is stored.
+	 * @param input Parameters to pass to the PHP script.
+	 */
+	private static void phpRequest(String urlString, String input) {
         PrintStream ps = null;
         try {
-            URL url = new URL(URL);
+            URL url = new URL(urlString);
             URLConnection con = url.openConnection();
 
             con.setDoOutput(true);
@@ -46,10 +49,10 @@ public class ServerTextFileIO {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            if(ps != null) {
+            if (ps != null) {
                 try {
                     ps.close();
-                } catch(Exception e) {
+                } catch (Exception e) {
                     //oh well...
                 }
             }
@@ -60,16 +63,20 @@ public class ServerTextFileIO {
 	 * @return the singleton instance of this class
 	 */
 	public static synchronized ServerTextFileIO getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new ServerTextFileIO();
 		}
 		
 		return instance;
 	}
 	
+	/**
+	 * Delete a file from the server.
+	 * @param fileName Name of the file to delete.
+	 */
 	public synchronized void delete(String fileName) {
 	    //protect for accidentally deleting the player pool
-	    if(fileName.equals(PlayerPool.PLAYER_POOL_FILE_NAME)) {
+	    if (fileName.equals(PlayerPool.PLAYER_POOL_FILE_NAME)) {
 	        throw new RuntimeException("Error, you are not allowed to delete the player pool.");
 	    }
 	    
@@ -77,7 +84,8 @@ public class ServerTextFileIO {
 	}
 	
 	/**
-	 * @return the contents of the file
+	 * Read the contents of a fine and return them.
+	 * @return The contents of the file as a string.
 	 */
 	public synchronized String read(String fileName) {
 		String contents = "";
@@ -107,20 +115,25 @@ public class ServerTextFileIO {
 	}
 
 	/**
-	 * Overwrites the contents of the file
-	 * @param data string to write to the file
+	 * Overwrite the contents of the file.
+	 * @param fileName Name of the file in which the overwrite is to be done.
+	 * @param data string to write to the file.
 	 */
 	private synchronized void write(String fileName, String data) {
 	    phpRequest(PHP_WRITE_URL, fileName + ":" + data);
 	}
 	
+	/**
+	 * Create a file on the server.
+	 * @param fileName Name of the file to be created.
+	 */
 	public synchronized void createFile(String fileName) {
 		write(fileName, new String());
 	}
 	
 	/**
-	 * Appends a string to the end of the file
-	 * @param lineToAdd line to append to the file
+	 * Append a string to the end of the file.
+	 * @param lineToAdd line to append to the file.
 	 */
 	public synchronized void addLine(String fileName, String lineToAdd) {
 		lineToAdd = lineToAdd.trim();
@@ -135,13 +148,19 @@ public class ServerTextFileIO {
 	}
 	
 	/**
-	 * Removes all instances of a specified line in the file
-	 * @param lineToRemove removes all lines in the file that match this line
+	 * Remove all instances of a specified line in a file.
+	 * @param fileName Name of a file from which the line is to be removed.
+	 * @param lineToRemove Line to be matched.
 	 */
 	public synchronized void removeLine(String fileName, String lineToRemove) {
 		removeLines(fileName, new String[]{lineToRemove});
 	}
 	
+	/**
+	 * Remove all instances of each line in a specified set of lines in a file.
+	 * @param fileName Name of the file from which the lines are the be removed.
+	 * @param linesToRemove Line to be matched.
+	 */
 	public void removeLines(String fileName, String[] linesToRemove) {
 		String fileContents = read(fileName);	
 		if(fileContents == null || fileContents.equals("")) {
@@ -161,17 +180,11 @@ public class ServerTextFileIO {
 		write(fileName, fileContents);
 	}
 	
-	private boolean arrayContainsLine(String[] array, String target) {
-		boolean contains = false;
-		for(String line : array) {
-			if(line.equals(target)) {
-				contains = true;
-				break;
-			}
-		}
-		return contains;
-	}
-	
+	/**
+	 * Verify whether a file exists on the server.
+	 * @param fileName Name of the file to be verified.
+	 * @return Boolean indicating whether the file exists.
+	 */
 	public boolean exists(String fileName) {
 		try {
 			read(fileName);
@@ -181,5 +194,19 @@ public class ServerTextFileIO {
 				return false;
 			throw e;
 		}
+	}
+	
+	/**
+	 * Verify whether an array of strings contains a string.
+	 * @param array Array of strings in question.
+	 * @param target String to be matched.
+	 * @return Boolean indicating whether array contains target.
+	 */
+	private static boolean arrayContainsLine(String[] array, String target) {
+		for(String line : array)
+			if(line.equals(target))
+				return true;
+		
+		return false;
 	}
 }

@@ -3,14 +3,19 @@ package backend;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+/**
+ * Representation of a player.
+ */
 public class Player {
+	protected static long RANDOM_NUMBER_UPPER_BOUND = 100000;
+	
     private final String fileName;
 	private final String hostname;
 	private final short mask;
 	private final int coin; //0 or 1
 	
 	/**
-	 * Determines this player's IP and infers this player's coin value based on the coin value of the oponent
+	 * Determines this player's IP and infers this player's coin value based on the coin value of the opponent
 	 * @param opponent this player's opponent
 	 */
 	public Player(Player opponent) {
@@ -154,13 +159,16 @@ public class Player {
 		return this.coin;
 	}
 	
+	/**
+	 * @return Fallback server filename, this is the filename the user will read from (i.e. listening socket replacement)
+	 */
 	public String getFileName() {
 		return this.fileName;
 	}
 	
 	/**
 	 * Used for storing player information on server file.
-	 * format:hostname/mask,coinValue
+	 * format:hostname/mask,coinValue,fileName
 	 */
 	public String toString() {
 		return hostname + "/" + mask + "," + coin + "," + fileName;
@@ -198,9 +206,14 @@ public class Player {
 		}
 	}
 	
-	private String generateFileName(String IP) {
-	    String fileName = IP.replace(".", "-");
-	    int rand = (int) (Math.random() * 100000);
+	/**
+	 * Generate a random file name for the server fallback using the IP as a seed.
+	 * @param ip User's IP address
+	 * @return Random file name in the form a-b-c-d-n where a.b.c.d is the IP address and n is a random number.
+	 */
+	private String generateFileName(String ip) {
+	    String fileName = ip.replace(".", "-");
+	    long rand = (long) (Math.random() * RANDOM_NUMBER_UPPER_BOUND);
 	    return fileName + "-" + rand + ".txt";
 	}
 }
