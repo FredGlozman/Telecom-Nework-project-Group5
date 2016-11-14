@@ -12,6 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+/**
+ * Error view: displays an error message and detects mouse input upon which the information is sent to the error controller. 
+ */
 public class ErrorCanvas extends Canvas {
 	
 	// Margins
@@ -48,11 +51,18 @@ public class ErrorCanvas extends Canvas {
 	
 	private ErrorLogic el;
 	
+	/**
+	 * Constructor: sets up link with the error logic (controller).
+	 * @param el Error controller.
+	 */
 	public ErrorCanvas(ErrorLogic el) {
 		super();
 		this.el = el;
 	}
 
+	/**
+	 * Update the graphics, show ever component.
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -63,12 +73,20 @@ public class ErrorCanvas extends Canvas {
 		showHint(g2);
 	}
 	
+	/**
+	 * Draw the background - a dark grey gradient.
+	 * @param g2 Graphics.
+	 */
 	private void drawBackground(Graphics2D g2) {
 		g2.setPaint(BACKGROUND_GRADIENT);
 		Rectangle bg = new Rectangle(0, 0, WindowFrame.WIDTH, WindowFrame.HEIGHT);
 		g2.fill(bg);
 	}
 
+	/**
+	 * Draw the header message - normally either 'ERROR' or 'CRITICAL ERROR'.
+	 * @param g2 Graphics.
+	 */
 	private void showHeader(Graphics2D g2) {
 		g2.setPaint(HEADER_COLOR);
 		g2.setFont(HEADER_FONT);
@@ -78,15 +96,24 @@ public class ErrorCanvas extends Canvas {
 		g2.drawString(this.el.getErrorHeader() + ":", x, y);
 	}
 	
+	/**
+	 * Draw the error message - main content of the frame.
+	 * @param g2 Graphics.
+	 */
 	private void showErrorMessage(Graphics2D g2) {
 		g2.setPaint(MESSAGE_COLOR);
 		g2.setFont(MESSAGE_FONT);
 		FontMetrics fm = g2.getFontMetrics();
 		int x = (int) (MESSAGE_LEFT_MARGIN * WindowFrame.WIDTH);
 		int y = (int) (fm.getAscent() + (WindowFrame.HEIGHT - (fm.getAscent() + fm.getDescent())) / 2 + VERTICAL_SPACING * WindowFrame.HEIGHT / 2);
+		// Get the error message from the controller.
 		g2.drawString(this.el.getErrorMessage(), x, y);
 	}
 	
+	/**
+	 * Tell the user that a mouse click dismisses the error, thus triggering the next action as decided by the controller.
+	 * @param g2 Graphics.
+	 */
 	private void showHint(Graphics2D g2) {
 		g2.setPaint(HINT_COLOR);
 		g2.setFont(HINT_FONT);
@@ -109,6 +136,9 @@ public class ErrorCanvas extends Canvas {
 	@Override
 	public void mouseExited(MouseEvent e) {}
 
+	/**
+	 * Dismiss the error on mouse click; dismissal consequence determined by the error controller.
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		this.el.dismissError();
