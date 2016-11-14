@@ -124,8 +124,8 @@ public class ServerTextFileIO {
 	}
 	
 	/**
-	 * Clears the contents of a file
-	 * @param fileName name of the file to clear
+	 * Clear the contents of a file.
+	 * @param fileName Name of the file to clear.
 	 */
 	public synchronized void clear(String fileName) {
 	    phpRequest(PHP_WRITE_URL, fileName + ":" + "");

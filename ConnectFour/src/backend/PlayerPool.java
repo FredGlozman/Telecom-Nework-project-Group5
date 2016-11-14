@@ -17,6 +17,8 @@ public class PlayerPool {
 	private Player self;
   
 	protected static final String PLAYER_POOL_FILE_NAME = "PlayerPool.txt";
+    protected static final int MAX_AVAILABILITY_WAIT_TIME = 5000; // 5 seconds
+    protected static final int AVAILABILITY_WAIT_TIME = 500; // 1/2 seconds
 
 	private static PlayerPool instance; 
 	
@@ -130,29 +132,27 @@ public class PlayerPool {
 	}
 	
 	/**
-	 * Puts this thread to sleep while the Player Pool has 2 or more 
+	 * Put this thread to sleep while the Player Pool has 2 or more 
 	 * @return content of the file once it contains less than 2 players
 	 */
 	private void waitForAvailability() {	
-	    final int maxWaitTime = 5000; // 5 seconds
-	    final int waitTime = 500;     // 1/2 seconds
 	    int totalWaitTime = 0;
 	    
 		boolean first = true;
 		do {
 		    //no need to wait before loading the file for the first time
-			if(!first) {
-			    if(totalWaitTime < maxWaitTime) {
+			if (!first) {
+			    if (totalWaitTime < MAX_AVAILABILITY_WAIT_TIME) {
     				try {
-    					Thread.sleep(waitTime);
-    					totalWaitTime += waitTime;
+    					Thread.sleep(AVAILABILITY_WAIT_TIME);
+    					totalWaitTime += AVAILABILITY_WAIT_TIME;
     				} catch (InterruptedException e) {
     					throw new RuntimeException(e);
     				}
 			    } 
-			    //file has had 2 or more players for maxWaitTime ms. 
-			    //those players should have been matched and removed from the pool by now.
-			    //there must have been an error in a previous execution. clear the file and continue.
+			    // file has had 2 or more players for maxWaitTime ms. 
+			    // those players should have been matched and removed from the pool by now.
+			    // there must have been an error in a previous execution. clear the file and continue.
 			    else {
 			        file.clear(PLAYER_POOL_FILE_NAME);
 			        pool.clear();
@@ -163,22 +163,19 @@ public class PlayerPool {
 			}
 
 			reloadPool();
-		} while(pool.size() >= 2);
+		} while (pool.size() >= 2);
 	}	
 	
 	/**
-	 * Reloads the player pool from the player info in the file on the server
+	 * Reload the player pool from the player info in the file on the server
 	 */
 	private void reloadPool() {
 		pool.clear();
 		
 		String content = file.read(PLAYER_POOL_FILE_NAME);
-		if(content != null && content.length()>0) {
-			for(String line : content.split("\n")) {
-				if(line != null && line.length() > 0) {
+		if (content != null && content.length() > 0)
+			for (String line : content.split("\n"))
+				if (line != null && line.length() > 0)
 					pool.add(new Player(line));
-				}
-			}
-		}
 	}
 }
