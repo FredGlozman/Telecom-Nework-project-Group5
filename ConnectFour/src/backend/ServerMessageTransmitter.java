@@ -11,7 +11,7 @@ import frontend.MiddleWare;
  * This file is created (and deleted) by the opponent upon server message listener setup.
  */
 public class ServerMessageTransmitter extends Thread {
-	protected static final int FILE_CHECK_TIME_LIMIT = 20; // Time in seconds
+	protected static final int FILE_CHECK_TIME_LIMIT = 7; // Time in seconds
 	protected static final int FILE_CHECK_SLEEP_TIME_MS = 500; // Time inbetween checks in milliseconds
 	protected static final int FILE_WRITE_SLEEP_TIME_MS = 100;
 	
@@ -37,22 +37,23 @@ public class ServerMessageTransmitter extends Thread {
 		
 		ServerTextFileIO file = ServerTextFileIO.getInstance();
 		
-		// Wait for the file to exist.
-		while (!file.exists(writingFileName)) {
-			// If the file doesn't exist for too long, there is an important error.
-			if (timeElapsedMs >= fileCheckTimeLimitMs)
-				throw new RuntimeException("Timed out while waiting for file to exist.");
-			
-			try {
-				// Don't ping too often - don't want to tax the resources.
+		try {
+			// Wait for the file to exist.
+			while (!file.exists(writingFileName)) {
+				// If the file doesn't exist for too long, there is an important error.
+				if (timeElapsedMs >= fileCheckTimeLimitMs)
+					throw new RuntimeException("Timed out while waiting for file to exist.");
+				
 				Thread.sleep(FILE_CHECK_SLEEP_TIME_MS);
-			} catch (InterruptedException e) {
-				// whatever...
+				timeElapsedMs += FILE_CHECK_SLEEP_TIME_MS;
 			}
-			timeElapsedMs += FILE_CHECK_SLEEP_TIME_MS;
+			
+			this.isOpen = true;
+		} catch (InterruptedException e) {
+			// whatever...
+		} catch (Exception e) {
+			mw.transferFail();
 		}
-		
-		this.isOpen = true;
 	}
 	
 	/**

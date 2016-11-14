@@ -97,7 +97,7 @@ public class Player {
 		long thisIP = ipAsInt(this.hostname);
 		long otherIP = ipAsInt(other.getHostname());
 		
-		return getUnmaskedValue(thisIP, mask) == getUnmaskedValue(otherIP, mask);
+		return getMaskedValue(thisIP, mask) == getMaskedValue(otherIP, mask);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public class Player {
 	/**
 	 * Return only the unmasked part of the IP address
 	 * @param ip IP as long integer
-	 * @param mask Masked part of the IP
+	 * @param mask Length of masked part of the IP
 	 * @return Unmasked part of the IP as long integer
 	 */
 	private long getUnmaskedValue(long ip, short mask) {
@@ -136,6 +136,16 @@ public class Player {
 			unmaskedPart += 1;
 		}
 		return ip & unmaskedPart;
+	}
+	
+	/**
+	 * Return only the masked part of the IP address
+	 * @param ip IP as long integer
+	 * @param mask Length of masked part of the IP
+	 * @return Masked part of the IP as long integer
+	 */
+	private long getMaskedValue(long ip, short mask) {
+		return ip - getUnmaskedValue(ip, mask);
 	}
 	
 	/**
