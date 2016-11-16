@@ -6,7 +6,7 @@ import java.util.List;
 import frontend.PoolObserver;
 
 /**
- * Singlton class player pool from which opponents will be picked and matches will be made. The player pool
+ * Singleton class player pool from which opponents will be picked and matches will be made. The player pool
  * is a text file hosted on Fred Glozman's SOCS server where stringified players are inserted. When a player
  * gets in queue, they add themself to the file, and when they find another player and a match is made,
  * they both get removed.
