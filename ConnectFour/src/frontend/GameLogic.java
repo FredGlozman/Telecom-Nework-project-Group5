@@ -307,6 +307,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	 */
 	public void exit() {
 		this.mh.sendMessage(this, MessageHandler.GAME_OVER);
+		this.gc.cleanUp();
 		this.f.insult(isWinner());
 	}
 
