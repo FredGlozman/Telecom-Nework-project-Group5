@@ -6,6 +6,10 @@ import java.awt.geom.*;
 
 import javax.swing.*;
 
+/**
+ * Game view: displays the grid, the falling token, an arrow indicator, the turn timer, and potentially text indicating whether the player won or lost.
+ * Detects mouse input to make plays, and is updated upon receiving network information.
+ */
 public class GameCanvas extends Canvas {
 
 	private static final long serialVersionUID = -7366085140697800431L;
@@ -74,6 +78,11 @@ public class GameCanvas extends Canvas {
 	
 	private FallingToken fallingToken;
 	
+	/**
+	 * Constructor: sets up a link with the game logic (controller), initializes the appropriate UI colors, creates the UI representation
+	 * of the grid, and launches the game timer.
+	 * @param gl Game controller.
+	 */
 	public GameCanvas(GameLogic gl) {
 		super();
 		this.gl = gl;
@@ -86,6 +95,9 @@ public class GameCanvas extends Canvas {
 		this.timer.start();
 	}
 	
+	/**
+	 * Create the UI representation of the game grid, swiss cheese style - i.e. a rectangle with holes in it.
+	 */
 	private void createGrid() {
 		Rectangle gridBackground = new Rectangle(
 				(int) (GRID_LEFT - (LEFT_RIGHT_PADDING * WindowFrame.WIDTH)),
@@ -100,7 +112,9 @@ public class GameCanvas extends Canvas {
 			}
 		}
 	}
-	
+	/**
+	 * Update the graphics, show every component.
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -118,12 +132,20 @@ public class GameCanvas extends Canvas {
 		}
 	}
 
+	/**
+	 * Draw the background - a dark grey gradient.
+	 * @param g2 Graphics.
+	 */
 	private void drawBackground(Graphics2D g2) {
 		g2.setPaint(BACKGROUND_GRADIENT);
 		Rectangle bg = new Rectangle(0, 0, WindowFrame.WIDTH, WindowFrame.HEIGHT);
 		g2.fill(bg);
 	}
 
+	/**
+	 * Draw all placed tokens.
+	 * @param g2 Graphics.
+	 */
 	private void drawTokens(Graphics2D g2) {
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 6; j++) {
@@ -135,6 +157,10 @@ public class GameCanvas extends Canvas {
 		}
 	}
 	
+	/**
+	 * Draw falling token at current position if there is one.
+	 * @param g2 Graphics.
+	 */
 	private void drawFallingToken(Graphics2D g2) {
 		if (this.fallingToken == null)
 			return;
@@ -143,6 +169,10 @@ public class GameCanvas extends Canvas {
 		g2.fill(this.fallingToken.getRepresentation());
 	}
 
+	/**
+	 * Draw grid - this is done after the tokens and falling tokens so that they appear behind it.
+	 * @param g2 Graphics.
+	 */
 	private void drawGrid(Graphics2D g2) {
 		g2.setPaint(GRID_COLOR);
 		g2.fill(this.grid);
@@ -151,6 +181,11 @@ public class GameCanvas extends Canvas {
 		g2.draw(this.grid);
 	}
 	
+	/**
+	 * Draw arrow indicator on player's turn depending on the mouse's position -
+	 * this is the hint on top showing where the token will fall if the player makes the move.
+	 * @param g2 Graphics.
+	 */
 	private void drawArrowIndicator(Graphics2D g2) {
 		if (!this.gl.isUserTurn() || this.selectedColumn == -1 || this.fallingToken != null)
 			return;
@@ -167,6 +202,10 @@ public class GameCanvas extends Canvas {
 		g2.fill(arrow);
 	}
 	
+	/**
+	 * Draw the timer bar at the bottom - its colour is that of the player whose turn it is and it gradually shrinks in width.
+	 * @param g2 Graphics.
+	 */
 	private void drawTimeLeft(Graphics2D g2) {
 		double ratioOfTimeLeft = (double) this.timeLeft / (GameLogic.TURN_TIME * FPS);
 		int x = (int) (LEFT_RIGHT_MARGIN * WindowFrame.WIDTH);
@@ -181,6 +220,10 @@ public class GameCanvas extends Canvas {
 		g2.fillRect(x, y, width, height);
 	}
 	
+	/**
+	 * If the game is over, draw the string telling the player if they are the victor, the loser, or in a draw.
+	 * @param g2 Graphics.
+	 */
 	private void drawWinLose(Graphics2D g2) {
 		String str;		
 		if (this.gl.isWinner())
@@ -206,6 +249,11 @@ public class GameCanvas extends Canvas {
 		g2.drawString(str, x, y);
 	}
 
+	/**
+	 * Convert an integer to a token color.
+	 * @param type Integer input.
+	 * @return Color of token.
+	 */
 	protected static Color getTokenColor(int type) {
 		switch (type) {
 			case 0:
@@ -215,10 +263,16 @@ public class GameCanvas extends Canvas {
 			case 2:
 				return TOKEN2_COLOR;
 			default:
-				return null; // error
+				throw new RuntimeException("Invalid token type.");
 		}
 	}
 
+	/**
+	 * Create an ellipse representation of a token given its coordinates within the grid.
+	 * @param i Column index (range: 0-6 incl.)
+	 * @param j Row index (range: 0-5 incl.)
+	 * @return Ellipse represnetation.
+	 */
 	protected static Ellipse2D.Double getEllipseAtCoords(int i, int j) {
 		return new Ellipse2D.Double(
 				GRID_LEFT + i * COLUMN_WIDTH + HOLE_DIAMETER * HOLE_MARGIN,
@@ -227,6 +281,12 @@ public class GameCanvas extends Canvas {
 				HOLE_DIAMETER);
 	}
 
+	/**
+	 * Launch the falling token UI.
+	 * @param column Column in which the token is being dropped.
+	 * @param row Row where the token will land.
+	 * @param type Color of the token.
+	 */
 	public void drop(int column, int row, int type) {
 		this.fallingToken = new FallingToken(column, row, type);
 	}
@@ -240,6 +300,9 @@ public class GameCanvas extends Canvas {
 	@Override
 	public void mouseExited(MouseEvent e) {}
 
+	/**
+	 * On mouse press, if the game is over, go to the insult view; else if it's the user's turn, drop the token at the mouse's position.
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (gl.getWinner() != 0) {
@@ -257,6 +320,9 @@ public class GameCanvas extends Canvas {
 	@Override
 	public void mouseDragged(MouseEvent e) {}
 
+	/**
+	 * Update the arrow indicator's position on mouse move.
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (gl.getWinner() != 0)
@@ -279,6 +345,9 @@ public class GameCanvas extends Canvas {
 		
 	}
 
+	/**
+	 * At every frame, update the timer and all animations. If the game is over, stop the timer.
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		this.timeLeft = this.gl.updateTimer();
@@ -302,6 +371,9 @@ public class GameCanvas extends Canvas {
 	@Override
 	public void keyTyped(KeyEvent e) {}
 	
+	/**
+	 * Clean up the view and stop the timer.
+	 */
 	@Override
 	public void cleanUp() {
 		super.cleanUp();

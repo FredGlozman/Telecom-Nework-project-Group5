@@ -61,7 +61,7 @@ public class ErrorCanvas extends Canvas {
 	}
 
 	/**
-	 * Update the graphics, show ever component.
+	 * Update the graphics, show every component.
 	 */
 	@Override
 	protected void paintComponent(Graphics g) {
