@@ -1,5 +1,8 @@
 package frontend;
 
+/**
+ * Insult controller: Repsonsible for the insult logic.
+ */
 public class InsultLogic implements ViewController, MiddleWare {
 
 	protected static final int MAX_INSULT_LENGTH = 32; // Maximum number of characters the insult can contain
@@ -17,6 +20,11 @@ public class InsultLogic implements ViewController, MiddleWare {
 	
 	private MessageHandler mh;
 	
+	/**
+	 * Constructor: uses previously established network configuration, sets up the timer, and launches the view.
+	 * @param f Pointer to the frame containing the view.
+	 * @param winner Whether the player is the winner.
+	 */
 	public InsultLogic(WindowFrame f, boolean winner) {
 		this.f = f;
 		this.winner = winner;
@@ -28,12 +36,19 @@ public class InsultLogic implements ViewController, MiddleWare {
 		this.ic = new InsultCanvas(this);
 	}
 	
+	/**
+	 * Reset the timer to a given time and increment the phase (for the loser: phase 1 = waiting for insult; phase 2 = insult received).
+	 * @param seconds Number of seconds to reset the timer to.
+	 */
 	private void setTimer(int seconds) {
 		this.phase++;
 		this.timeLeft = this.timeSet = (seconds + (winner ? 0 : LOSER_EXTRA_TIME)) * GameCanvas.FPS;
 	}
-	
-	// returns time left
+
+	/**
+	 * Decrement the timer at every frame and act appropriately if no time remains.
+	 * @return Time left in number of frames.
+	 */
 	public int updateTimer() {
 		if (--this.timeLeft == 0) {
 			if (this.winner)
@@ -48,36 +63,65 @@ public class InsultLogic implements ViewController, MiddleWare {
 		return this.timeLeft;
 	}
 	
+	/**
+	 * Getter function to get the timer cap.
+	 * @return To how many frames the timer was reset last.
+	 */
 	public int getTimeSet() {
 		return this.timeSet;
 	}
 	
+	/**
+	 * Getter function for the insult as a string.
+	 * @return Insult as a string.
+	 */
 	public String getInsult() {
 		return insult;
 	}
 
+	/**
+	 * Setter function for the insult as a string.
+	 * @param insult Insult as a string.
+	 */
 	public void setInsult(String insult) {
 		this.insult = insult;
 	}
 	
+	/**
+	 * Returns whether the insult is at the maximum character count.
+	 * @return True if the insult is at the maximum character count; false otherwise.
+	 */
 	public boolean insultAtMaxLength() {
 		return this.insult.length() >= MAX_INSULT_LENGTH;
 	}
 	
+	/**
+	 * Append one character to the insult if there is room for it - called when the winner types or when the loser receives a byte.
+	 * @param c Character to append.
+	 */
 	public void appendToInsult(char c) {
 		if (!this.insultAtMaxLength())
 			this.insult += c;
 	}
 	
+	/**
+	 * Remove the last character from the insult - called when the winner backspaces.
+	 */
 	public void popFromInsult() {
 		if (this.insult.length() > 0)
 			this.insult = this.insult.substring(0, this.insult.length() - 1);
 	}
 	
+	/**
+	 * Clear the insult - called when the winner hits escape.
+	 */
 	public void clearInsult() {
 		this.insult = new String();
 	}
 	
+	/**
+	 * Send the insult byte-by-byte (character-by-character).
+	 */
 	public void sendInsult() {
 		this.ic.stop();
 		
@@ -92,6 +136,10 @@ public class InsultLogic implements ViewController, MiddleWare {
 		this.mh.sendMessage(this, MessageHandler.END_OF_STRING);		
 	}
 	
+	/**
+	 * Getter function for the header to display in the view.
+	 * @return Header text as a string.
+	 */
 	public String getHeaderText() {
 		if (winner)
 			return "To: Loser";
@@ -102,30 +150,53 @@ public class InsultLogic implements ViewController, MiddleWare {
 				return "From: Winner";
 	}
 	
+	/**
+	 * Returns whether the player is the winner.
+	 * @return True if the player is the winner; false otherwise.
+	 */
 	public boolean isWinner() {
 		return this.winner;
 	}
 	
+	/**
+	 * Getter function for the phase (for the loser: phase 1 = waiting for insult; phase 2 = reading the insult).
+	 * @return Phase number (1 or 2); always 1 for winner.
+	 */
 	public int getPhase() {
 		return this.phase;
 	}
 	
+	/**
+	 * Move onto the player queue.
+	 */
 	public void exit() {
 		this.mh.close();
 		this.ic.cleanUp();
 		this.f.waitForPlayers();
 	}
 	
+	/**
+	 * Getter function for the view.
+	 * @return View.
+	 */
 	@Override
 	public Canvas getCanvas() {
 		return this.ic;
 	}
 
+	/**
+	 * Getter function for the ID of the view.
+	 * @return Insult ID.
+	 */
 	@Override
 	public ViewID getID() {
 		return ViewID.INSULT;
 	}
 
+	/**
+	 * Method that treats received data. Treats each signal appropriately.
+	 * @data Signal.
+	 */
 	@Override
 	public void transferData(int data) {
 		// If the winner sent an empty message, halve the time remaining -- don't exit immediately to shuffle players around
@@ -164,24 +235,35 @@ public class InsultLogic implements ViewController, MiddleWare {
 		appendToInsult((char) data);
 	}
 	
+	/**
+	 * Method called if a message cannot be delivered; goes to the transfer fail errror screen.
+	 */
 	@Override
 	public void transferFail() {
 		this.f.displayCriticalError(ErrorLogic.TRANSFER_FAIL);
 	}
 	
+	/**
+	 * Clean up everything related to the trash talk feature, i.e. the connection and the view.
+	 */
 	@Override
 	public void cleanUp() {
 		this.mh.close();
 		this.ic.cleanUp();
 	}
 
+	/**
+	 * If the window is closed mid-insult, send a disconnect signal to the opponent.
+	 */
 	@Override
 	public void disconnect() {
 		this.mh.sendMessage(this, MessageHandler.DISCONNECT_SIGNAL);
 		try {
+			// Give some time for the signal to go out.
 			Thread.sleep(MessageHandler.GRACE_PERIOD * 1000);
 		} catch (InterruptedException e) {
-			// whatever...
+			// If the signal still didn't go out, the other player will have to wait for their timer to run out, and they will know then.
+			// No big deal.
 		}
 	}
 }

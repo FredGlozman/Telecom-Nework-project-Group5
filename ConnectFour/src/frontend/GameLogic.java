@@ -1,7 +1,7 @@
 package frontend;
 
 /**
- * Game controller: Responsible for the gameplay logic and subsequent actions.
+ * Game controller: Responsible for the gameplay logic.
  */
 public class GameLogic implements ViewController, MiddleWare {
 	
@@ -303,7 +303,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 
 	/**
-	 * Function called when the player wants to move on to the insult view.
+	 * Function called when the player wants to move on to the insult view. If it's a draw, queue up.
 	 */
 	public void exit() {
 		this.mh.sendMessage(this, MessageHandler.GAME_OVER);
@@ -336,7 +336,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 	
 	/**
-	 * Method called if a message cannot be transmitted; goes to the transfer fail screen.
+	 * Method called if a message cannot be delivered; goes to the transfer fail error screen.
 	 */
 	@Override
 	public void transferFail() {
@@ -344,7 +344,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 	
 	/**
-	 * Getter function fo the ID of the view.
+	 * Getter function for the ID of the view.
 	 * @return Game ID.
 	 */
 	@Override

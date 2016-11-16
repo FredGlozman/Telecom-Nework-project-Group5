@@ -14,6 +14,11 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.Timer;
 
+/**
+ * Insult view: technically two different views.
+ * The winner is given a prompt to send an insult.
+ * The loser is given a waiting screen, and when the winner sends their insult, the loser sees it.
+ */
 public class InsultCanvas extends Canvas {
 	
 	protected static final int CURSOR_FRAME_COUNT = 15;
@@ -68,6 +73,10 @@ public class InsultCanvas extends Canvas {
 	
 	private int timeLeft;
 	
+	/**
+	 * Constructor: sets up a link with the insult logic (controller), initializes fields, and launches the insult timer.
+	 * @param il Insult controller.
+	 */
 	public InsultCanvas(InsultLogic il) {
 		super();
 		this.timer = new Timer(1000 / FPS, this);
@@ -78,6 +87,9 @@ public class InsultCanvas extends Canvas {
 		timer.start();
 	}
 
+	/**
+	 * Update the graphics, show ever component.
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -93,12 +105,21 @@ public class InsultCanvas extends Canvas {
 		}
 	}
 	
+	/**
+	 * Draw the background - a dark grey gradient.
+	 * @param g2 Graphics.
+	 */
 	private void drawBackground(Graphics2D g2) {
 		g2.setPaint(BACKGROUND_GRADIENT);
 		Rectangle bg = new Rectangle(0, 0, WindowFrame.WIDTH, WindowFrame.HEIGHT);
 		g2.fill(bg);
 	}
 
+	/**
+	 * Draw the header depending on the context. The winner will see "To: Loser", and the loser will see
+	 * either "Please wait..." while waiting for the winner to type up the insult or "From: Winner".
+	 * @param g2 Graphics.
+	 */
 	private void showHeader(Graphics2D g2) {
 		String str = this.il.getHeaderText();
 		g2.setPaint(HEADER_COLOR);
@@ -109,6 +130,11 @@ public class InsultCanvas extends Canvas {
 		g2.drawString(str, x, y);
 	}
 	
+	/**
+	 * Show the insult. For the winner, this will appear as a text prompt, and for the loser, as plain text received
+	 * from the winner.
+	 * @param g2 Graphics.
+	 */
 	private void displayInsult(Graphics2D g2) {
 		String str = this.il.getInsult();
 		g2.setPaint(INSULT_COLOR);
@@ -119,6 +145,10 @@ public class InsultCanvas extends Canvas {
 		g2.drawString(str + ((!this.il.insultAtMaxLength() && this.winner && this.showCursor) ? "_" : ""), x, y);
 	}
 	
+	/**
+	 * The winner will be told that hitting enter will send the insult.
+	 * @param g2 Graphics.
+	 */
 	private void showHint(Graphics2D g2) {
 		g2.setPaint(HINT_COLOR);
 		g2.setFont(HINT_FONT);
@@ -129,6 +159,12 @@ public class InsultCanvas extends Canvas {
 		
 	}
 	
+	/**
+	 * A small circular timer will indicate how much time is left in two different possible contexts.
+	 * The first one is to tell the winner how much time remains before they have to finish typing up their insult.
+	 * The second one is to tell the loser for how much longer they must see the insult.
+	 * @param g2 Graphics.
+	 */
 	private void drawTimeLeft(Graphics2D g2) {
 		double ratioOfTimeLeft = (double) this.timeLeft / this.il.getTimeSet();
 		int x = (int) ((1 - RIGHT_MARGIN) * WindowFrame.WIDTH) - ADJUSTED_TIMER_DIAMETER;
@@ -138,6 +174,9 @@ public class InsultCanvas extends Canvas {
 		g2.fillArc(x, y, ADJUSTED_TIMER_DIAMETER, ADJUSTED_TIMER_DIAMETER, 90, (int) -(ratioOfTimeLeft * 360));
 	}
 	
+	/**
+	 * At every frame, update the timer and ensure the prompt cursor appears and disappears at the correct moments.
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (++frame == CURSOR_FRAME_COUNT) {
@@ -171,6 +210,9 @@ public class InsultCanvas extends Canvas {
 	@Override
 	public void mouseMoved(MouseEvent e) {}
 
+	/**
+	 * On winner's key press, update the insult appropriately.
+	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (!this.winner)
@@ -205,14 +247,24 @@ public class InsultCanvas extends Canvas {
 	@Override
 	public void keyTyped(KeyEvent e) {}
 
+	/**
+	 * Pause the timer; this is useful when a signal is being transmitted or received, to ensure the timer doesn't run out
+	 * mid-transmission.
+	 */
 	public void stop() {
 		this.timer.stop();
 	}
 	
+	/**
+	 * Resume the timer.
+	 */
 	public void resume() {
 		this.timer.start();
 	}
 	
+	/**
+	 * Clean up the view and stop the timer.
+	 */
 	@Override
 	public void cleanUp() {
 		super.cleanUp();

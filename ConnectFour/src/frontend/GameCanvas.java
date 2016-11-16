@@ -112,6 +112,7 @@ public class GameCanvas extends Canvas {
 			}
 		}
 	}
+	
 	/**
 	 * Update the graphics, show every component.
 	 */
