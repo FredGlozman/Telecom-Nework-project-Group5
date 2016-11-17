@@ -87,9 +87,6 @@ public class InsultCanvas extends Canvas {
 		timer.start();
 	}
 
-	/**
-	 * Update the graphics, show ever component.
-	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -174,9 +171,6 @@ public class InsultCanvas extends Canvas {
 		g2.fillArc(x, y, ADJUSTED_TIMER_DIAMETER, ADJUSTED_TIMER_DIAMETER, 90, (int) -(ratioOfTimeLeft * 360));
 	}
 	
-	/**
-	 * At every frame, update the timer and ensure the prompt cursor appears and disappears at the correct moments.
-	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (++frame == CURSOR_FRAME_COUNT) {
@@ -210,9 +204,6 @@ public class InsultCanvas extends Canvas {
 	@Override
 	public void mouseMoved(MouseEvent e) {}
 
-	/**
-	 * On winner's key press, update the insult appropriately.
-	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (!this.winner)
@@ -262,9 +253,6 @@ public class InsultCanvas extends Canvas {
 		this.timer.start();
 	}
 	
-	/**
-	 * Clean up the view and stop the timer.
-	 */
 	@Override
 	public void cleanUp() {
 		super.cleanUp();

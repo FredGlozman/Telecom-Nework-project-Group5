@@ -113,9 +113,6 @@ public class GameCanvas extends Canvas {
 		}
 	}
 	
-	/**
-	 * Update the graphics, show every component.
-	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -301,9 +298,6 @@ public class GameCanvas extends Canvas {
 	@Override
 	public void mouseExited(MouseEvent e) {}
 
-	/**
-	 * On mouse press, if the game is over, go to the insult view; else if it's the user's turn, drop the token at the mouse's position.
-	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (gl.getWinner() != 0) {
@@ -321,9 +315,6 @@ public class GameCanvas extends Canvas {
 	@Override
 	public void mouseDragged(MouseEvent e) {}
 
-	/**
-	 * Update the arrow indicator's position on mouse move.
-	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (gl.getWinner() != 0)
@@ -346,9 +337,6 @@ public class GameCanvas extends Canvas {
 		
 	}
 
-	/**
-	 * At every frame, update the timer and all animations. If the game is over, stop the timer.
-	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		this.timeLeft = this.gl.updateTimer();
@@ -372,9 +360,6 @@ public class GameCanvas extends Canvas {
 	@Override
 	public void keyTyped(KeyEvent e) {}
 	
-	/**
-	 * Clean up the view and stop the timer.
-	 */
 	@Override
 	public void cleanUp() {
 		super.cleanUp();

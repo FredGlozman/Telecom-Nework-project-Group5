@@ -293,10 +293,6 @@ public class GameLogic implements ViewController, MiddleWare {
 		return this.opponentColor;
 	}
 	
-	/**
-	 * Getter function for the view.
-	 * @return View.
-	 */
 	@Override
 	public Canvas getCanvas() {
 		return this.gc;
@@ -311,10 +307,6 @@ public class GameLogic implements ViewController, MiddleWare {
 		this.f.insult(isWinner());
 	}
 
-	/**
-	 * Method that treats received data. Treats each signal appropriately.
-	 * @data Signal.
-	 */
 	@Override
 	public void transferData(int data) {
 		if (data == MessageHandler.GAME_OVER) {
@@ -335,35 +327,22 @@ public class GameLogic implements ViewController, MiddleWare {
 			receiveToken(data);
 	}
 	
-	/**
-	 * Method called if a message cannot be delivered; goes to the transfer fail error screen.
-	 */
 	@Override
 	public void transferFail() {
 		this.f.displayCriticalError(ErrorLogic.TRANSFER_FAIL);
 	}
 	
-	/**
-	 * Getter function for the ID of the view.
-	 * @return Game ID.
-	 */
 	@Override
 	public ViewID getID() {
 		return ViewID.GAME;
 	}
 	
-	/**
-	 * Clean up everything related to gameplay, i.e. the connection and the view.
-	 */
 	@Override
 	public void cleanUp() {
 		this.mh.close();
 		this.gc.cleanUp();
 	}
 
-	/**
-	 * If the window is closed mid-game, send a disconnect signal to the opponent.
-	 */
 	@Override
 	public void disconnect() {
 		this.mh.sendMessage(this, MessageHandler.DISCONNECT_SIGNAL);

@@ -64,13 +64,13 @@ public class ServerMessageTransmitter extends Thread {
 		this.mw = mw;
 	}
 	
-	/**
-	 * Constantly check the message queue, if it is not empty, check if the server is ready to take
-	 * a new message, if it isn't wait and try again later, and if it is, then post the message to the
-	 * server.
-	 */
+
 	@Override
 	public void run() {
+		// Constantly check the message queue, if it is not empty, check if the server is ready to take
+		// a new message, if it isn't wait and try again later, and if it is, then post the message to the
+		// server.
+		 
 		ServerTextFileIO file = ServerTextFileIO.getInstance();
 		
 		try {

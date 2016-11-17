@@ -2,6 +2,9 @@ package frontend;
 
 import backend.*;
 
+/**
+ * Message handler for the socket scenario. Is used by the front-end to transmit outgoing and listen to incoming messages.
+ */
 public class SocketMessageHandler implements MessageHandler {
 	
 	private SocketMessageTransmitter mt;
@@ -11,7 +14,12 @@ public class SocketMessageHandler implements MessageHandler {
 	private int port1;
 	private int port2;
 	
-	
+	/**
+	 * Constructor: sets up fields.
+	 * @param hostname IP address of the opponent as a string.
+	 * @param port1 Transmitting port number.
+	 * @param port2 Listening port number.
+	 */
 	public SocketMessageHandler(String hostname, int port1, int port2) {
 		this.ip = hostname;
 		this.port1 = port1;

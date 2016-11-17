@@ -175,28 +175,16 @@ public class InsultLogic implements ViewController, MiddleWare {
 		this.f.waitForPlayers();
 	}
 	
-	/**
-	 * Getter function for the view.
-	 * @return View.
-	 */
 	@Override
 	public Canvas getCanvas() {
 		return this.ic;
 	}
 
-	/**
-	 * Getter function for the ID of the view.
-	 * @return Insult ID.
-	 */
 	@Override
 	public ViewID getID() {
 		return ViewID.INSULT;
 	}
 
-	/**
-	 * Method that treats received data. Treats each signal appropriately.
-	 * @data Signal.
-	 */
 	@Override
 	public void transferData(int data) {
 		// If the winner sent an empty message, halve the time remaining -- don't exit immediately to shuffle players around
@@ -235,26 +223,17 @@ public class InsultLogic implements ViewController, MiddleWare {
 		appendToInsult((char) data);
 	}
 	
-	/**
-	 * Method called if a message cannot be delivered; goes to the transfer fail errror screen.
-	 */
 	@Override
 	public void transferFail() {
 		this.f.displayCriticalError(ErrorLogic.TRANSFER_FAIL);
 	}
 	
-	/**
-	 * Clean up everything related to the trash talk feature, i.e. the connection and the view.
-	 */
 	@Override
 	public void cleanUp() {
 		this.mh.close();
 		this.ic.cleanUp();
 	}
 
-	/**
-	 * If the window is closed mid-insult, send a disconnect signal to the opponent.
-	 */
 	@Override
 	public void disconnect() {
 		this.mh.sendMessage(this, MessageHandler.DISCONNECT_SIGNAL);

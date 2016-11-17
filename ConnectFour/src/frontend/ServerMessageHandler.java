@@ -3,6 +3,9 @@ package frontend;
 import backend.ServerMessageListener;
 import backend.ServerMessageTransmitter;
 
+/**
+ * Message handler for the server fallback mechanism. Is used by the front-end to transmit outgoing and listen to incoming messages.
+ */
 public class ServerMessageHandler implements MessageHandler {
 
 	private ServerMessageTransmitter mt;
@@ -11,6 +14,11 @@ public class ServerMessageHandler implements MessageHandler {
 	private String writingFileName;
 	private String readingFileName;
 	
+	/**
+	 * Constructor: sets up fields.
+	 * @param writingFileName Name of the file to which the player will write.
+	 * @param readingFileName Name of the file from which the player will read.
+	 */
 	public ServerMessageHandler(String writingFileName, String readingFileName) {
 		this.writingFileName = writingFileName;
 		this.readingFileName = readingFileName;

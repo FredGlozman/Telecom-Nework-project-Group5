@@ -2,11 +2,15 @@ package frontend;
 
 import backend.Player;
 
+/**
+ * Interface for classes that must launch the game.
+ */
 public interface PoolObserver {
+	
 	/**
-	 * Signals to begin the game.
-	 * @param me your player info.
-	 * @param opponent opponent's player info.
+	 * Signal to begin the game.
+	 * @param me Player's information.
+	 * @param opponent Opponent's information.
 	 */
 	public void startGame(Player me, Player opponent);
 }

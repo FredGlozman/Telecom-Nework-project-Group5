@@ -46,14 +46,13 @@ public class ServerMessageListener extends Thread {
 	public void setMiddleWare(MiddleWare mw) {
 		this.mw = mw;
 	}
-
-	/**
-	 * Constantly ping the server file to check whether the opponent has posted anything to the file.
-	 * If so, then notify the front-end via mw.
-	 * Stop when the file is closed via the close() method.
-	 */
+	
 	@Override
 	public void run() {
+		// Constantly ping the server file to check whether the opponent has posted anything to the file.
+		// If so, then notify the front-end via mw.
+		// Stop when the file is closed via the close() method.
+
 		ServerTextFileIO file = ServerTextFileIO.getInstance();
 		
 		try {

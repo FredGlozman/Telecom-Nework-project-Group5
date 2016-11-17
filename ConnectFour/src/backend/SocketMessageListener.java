@@ -38,12 +38,11 @@ public class SocketMessageListener extends Thread {
 		this.mw = mw;
 	}
 	
-	/**
-	 * Constantly check whether the opponent sent anything. If they did, notify the front-end via mw.
-	 * Stop when the file is closed via the close() method.
-	 */
 	@Override
 	public void run() {
+		// Constantly check whether the opponent sent anything. If they did, notify the front-end via mw.
+		// Stop when the file is closed via the close() method.
+
 		try {
 			Socket clientSocket = this.listenerSocket.accept();
 			InputStream in = clientSocket.getInputStream();

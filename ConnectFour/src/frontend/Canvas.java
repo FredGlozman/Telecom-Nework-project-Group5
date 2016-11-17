@@ -23,11 +23,9 @@ public abstract class Canvas extends JPanel implements ActionListener, MouseList
 		requestFocusInWindow();
 	}
 
-	/**
-	 * Every time the frame is to be drawn, ensure the previous frame is cleared.
-	 */
 	@Override
 	protected void paintComponent(Graphics g) {
+		// Every time the frame is to be drawn, ensure the previous frame is cleared.
 		super.paintComponent(g);
 	}
 	

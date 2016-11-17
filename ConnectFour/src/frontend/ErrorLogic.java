@@ -79,27 +79,16 @@ public class ErrorLogic implements ViewController {
 		return this.errorMessage;
 	}
 	
-	/**
-	 * Getter function for the view.
-	 * @return View.
-	 */
 	@Override
 	public Canvas getCanvas() {
 		return this.ec;
 	}
 
-	/**
-	 * Getter function of the ID of the view.
-	 * @return Error ID.
-	 */
 	@Override
 	public ViewID getID() {
 		return ViewID.ERROR;
 	}
 
-	/**
-	 * Upon closure, ensure the view is properly disposed of.
-	 */
 	@Override
 	public void cleanUp() {
 		this.ec.cleanUp();

@@ -60,9 +60,6 @@ public class ErrorCanvas extends Canvas {
 		this.el = el;
 	}
 
-	/**
-	 * Update the graphics, show every component.
-	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -136,9 +133,6 @@ public class ErrorCanvas extends Canvas {
 	@Override
 	public void mouseExited(MouseEvent e) {}
 
-	/**
-	 * Dismiss the error on mouse click; dismissal consequence determined by the error controller.
-	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		this.el.dismissError();

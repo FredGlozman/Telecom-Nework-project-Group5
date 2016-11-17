@@ -43,13 +43,12 @@ public class SocketMessageTransmitter extends Thread {
 	public void setMiddleWare(MiddleWare mw) {
 		this.mw = mw;
 	}
-	
-	/**
-	 * Constantly check the message queue, if it is not empty, write it to the transmission stream and
-	 * flush it. Then wait and try again. Stop when the transmission socket is closed.
-	 */
+
 	@Override
 	public void run() {
+		// Constantly check the message queue, if it is not empty, write it to the transmission stream and
+		// flush it. Then wait and try again. Stop when the transmission socket is closed.
+		
 		try {
 			OutputStream out = this.senderSocket.getOutputStream();
 			while (this.senderSocket != null) {
