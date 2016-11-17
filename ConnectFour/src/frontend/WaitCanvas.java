@@ -15,6 +15,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.Timer;
 
+/**
+ * Wait view: this is the matchmaking view; provides something to look at while the player waits to be put in a game.
+ */
 public class WaitCanvas extends Canvas {
 
 	// Margins
@@ -63,10 +66,14 @@ public class WaitCanvas extends Canvas {
 	private int secondsWaited, fractionsOfASecondWaited;
 	
 	@SuppressWarnings("unused")
-	private WaitLogic wl;
+	private WaitLogic wl; // Not removing in case this becomes useful down the line.
 	
 	private static final long serialVersionUID = 4562861486690573984L;
 	
+	/**
+	 * Constructor: sets up a link with the wait logic (controller), initializes fields, and launches the wait timer for animations.
+	 * @param wl
+	 */
 	public WaitCanvas(WaitLogic wl) {
 		super();
 		this.secondsWaited = 0;
@@ -87,12 +94,20 @@ public class WaitCanvas extends Canvas {
 		showInnerSpinner(g2);
 	}
 	
+	/**
+	 * Draw the background - a dark grey gradient.
+	 * @param g2 Graphics.
+	 */
 	private void drawBackground(Graphics2D g2) {
 		g2.setPaint(BACKGROUND_GRADIENT);
 		Rectangle bg = new Rectangle(0, 0, WindowFrame.WIDTH, WindowFrame.HEIGHT);
 		g2.fill(bg);
 	}
 
+	/**
+	 * Draw the text telling the player they are in queue. By default, it reads "Waiting for other players..."
+	 * @param g2 Graphics.
+	 */
 	private void showText(Graphics2D g2) {
 		g2.setPaint(TEXT_COLOR);
 		g2.setFont(TEXT_FONT);
@@ -102,6 +117,10 @@ public class WaitCanvas extends Canvas {
 		g2.drawString(TEXT, x, y);
 	}
 	
+	/**
+	 * Draw the time elapsed in m:ss format to give the player a feel for how long they've been waiting.
+	 * @param g2 Graphics.
+	 */
 	private void showTime(Graphics2D g2) {
 		String str = formatTime(this.secondsWaited);
 		g2.setPaint(TIME_COLOR);
@@ -112,6 +131,10 @@ public class WaitCanvas extends Canvas {
 		g2.drawString(str, x, y);
 	}
 	
+	/**
+	 * Draw the outer spinner component of the colorful animation.
+	 * @param g2 Graphics.
+	 */
 	private void showOuterSpinner(Graphics2D g2) {
 		g2.setPaint(OUTER_SPINNER_COLOR);
 		g2.setStroke(OUTER_SPINNER_STROKE);
@@ -120,6 +143,10 @@ public class WaitCanvas extends Canvas {
 		g2.drawArc(x, y, ADJUSTED_OUTER_SPINNER_DIAMETER, ADJUSTED_OUTER_SPINNER_DIAMETER, -this.fractionsOfASecondWaited * 360 / FPS, OUTER_SPINNER_ARC_ANGLE);
 	}
 	
+	/**
+	 * Draw the inner spinner component of the colorful animation.
+	 * @param g2 Graphics.
+	 */
 	private void showInnerSpinner(Graphics2D g2) {
 		g2.setPaint(INNER_SPINNER_COLOR);
 		g2.setStroke(INNER_SPINNER_STROKE);
@@ -159,6 +186,11 @@ public class WaitCanvas extends Canvas {
 	@Override
 	public void mouseMoved(MouseEvent e) {}
 	
+	/**
+	 * Given a number of seconds, format the time in m:ss format.
+	 * @param seconds Seconds elapsed as integer.
+	 * @return Formatted string (m:ss) representing the input seconds.
+	 */
 	public static String formatTime(int seconds) {
 		String mins = seconds / 60 + "";
 		String secs = seconds % 60 + "";

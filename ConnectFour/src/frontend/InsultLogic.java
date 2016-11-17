@@ -1,7 +1,7 @@
 package frontend;
 
 /**
- * Insult controller: Repsonsible for the insult logic.
+ * Insult controller: Responsible for the insult logic.
  */
 public class InsultLogic implements ViewController, MiddleWare {
 
