@@ -7,6 +7,7 @@ public class ErrorLogic implements ViewController {
 	
 	protected static final String DISONNECT_MESSAGE = "Opponent has disconnected.";
 	protected static final String TRANSFER_FAIL = "Could not send packet.";
+	protected static final String CHECK_FAIL = "Data is corrupted.";
 
 	private ErrorCanvas ec;
 	private WindowFrame f;

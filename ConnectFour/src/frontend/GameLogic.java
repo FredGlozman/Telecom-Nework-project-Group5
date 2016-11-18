@@ -81,6 +81,7 @@ public class GameLogic implements ViewController, MiddleWare {
 	 * @param column Column number (range: 0-6 incl.)
 	 */
 	public void placeToken(int column) {
+		this.mh.sendMessage(this, getCheckNumberHash());
 		this.mh.sendMessage(this, column);
 		this.dropToken(column, this.userColor);
 	}
@@ -228,6 +229,33 @@ public class GameLogic implements ViewController, MiddleWare {
 		this.gameWinner = 3;
 		return true;
 	}
+	
+	/**
+	 * Generates a number unique to the current state of the board.
+	 * @return Board value.
+	 */
+	private int getCheckNumber() {
+		// TODO Generate a unique number per board; ideally as small as possible; and with as much information as possible
+		// in the least significant bits.
+		// Currently is a placeholder that just sums the values of the token, not unique at all.
+		int sum = 0;
+		for (int i = 0; i < 7; i++)
+			for (int j = 0; j < 6; j++)
+				sum += this.positions[i][j];
+		
+		return sum;
+	}
+	
+	/**
+	 * Returns the value of the board constrained within a byte and above all other signals.
+	 * Called in one of two possible scenarios:
+	 * 1. Player makes a move, call it before move is made and transmit it to the opponent.
+	 * 2. Player receives analogous value from opponent, call it to compare values and ensure data is not corrupted.
+	 * @return Hashed check value.
+	 */
+	private int getCheckNumberHash() {
+		return MessageHandler.CHECK_NUMBER_LOW + (getCheckNumber() % (256 - MessageHandler.CHECK_NUMBER_LOW));
+	}
 
 	/**
 	 * Getter function for the winner's color.
@@ -321,10 +349,18 @@ public class GameLogic implements ViewController, MiddleWare {
 		
 		if (data == MessageHandler.TIME_OUT_SYNC) {
 			this.gameWinner = userColor;
+			return;
 		}
 		
-		if (data >= 0 && data < 7)
+		if (data >= MessageHandler.CHECK_NUMBER_LOW && data != getCheckNumberHash()) {
+			this.f.displayCriticalError(ErrorLogic.CHECK_FAIL);
+			return;
+		}
+				
+		if (data >= 0 && data < 7) {
 			receiveToken(data);
+			return;
+		}
 	}
 	
 	@Override
