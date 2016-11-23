@@ -23,7 +23,7 @@ public class Player {
 		String[] fullIP = MyIP.getMyIP().split("/");
 		
 		if(fullIP.length != 2) {
-			throw new RuntimeException("Error, the IP: [" + fullIPAsString + "] has an unexpected format");
+			throw new RuntimeException("Error, the IP: '" + fullIPAsString + "' has an unexpected format");
 		}
 		
 		this.hostname = fullIP[0];
@@ -51,13 +51,13 @@ public class Player {
 		String[] components = playerInfo.split(",");
 		
 		if(components.length != 3) {
-			throw new RuntimeException("Error, the player info: [" + playerInfo + "] has an unexpected format");
+			throw new RuntimeException("Error, the player info: '" + playerInfo + "' has an unexpected format");
 		}
 	
 		String[] fullIP = components[0].split("/");
 		
 		if(fullIP.length != 2) {
-			throw new RuntimeException("Error, the IP: [" + components[0] + "] has an unexpected format");
+			throw new RuntimeException("Error, the IP: '" + components[0] + "' has an unexpected format");
 		}
 		
 		this.hostname = fullIP[0];
@@ -75,7 +75,7 @@ public class Player {
 		String[] fullIP = MyIP.getMyIP().split("/");
 		
 		if(fullIP.length != 2) {
-			throw new RuntimeException("Error, the IP: [" + fullIPAsString + "] has an unexpected format");
+			throw new RuntimeException("Error, the IP: '" + fullIPAsString + "' has an unexpected format");
 		}
 		
 		this.hostname = fullIP[0];
@@ -178,7 +178,7 @@ public class Player {
 	
 	/**
 	 * Used for storing player information on server file.
-	 * format:hostname/mask,coinValue,fileName
+	 * Format: hostname/mask,coinValue,fileName
 	 */
 	public String toString() {
 		return hostname + "/" + mask + "," + coin + "," + fileName;
@@ -194,7 +194,7 @@ public class Player {
 		int myCoin = -1;
 		if(opponentCoin == 0) {
 			myCoin = 1;
-		} else if(opponentCoin == 1){
+		} else if (opponentCoin == 1) {
 			myCoin = 0;
 		} else {
 			throw new RuntimeException("Error, the opponent's coin cannot be: " + opponentCoin);
@@ -225,5 +225,21 @@ public class Player {
 	    String fileName = ip.replace(".", "-");
 	    long rand = (long) (Math.random() * RANDOM_NUMBER_UPPER_BOUND);
 	    return fileName + "-" + rand + ".txt";
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+	    if (other == null)
+	    	return false;
+	    
+	    if (other == this)
+	    	return true;
+	    
+	    if (!(other instanceof Player))
+	    	return false;
+	    
+	    Player otherPlayer = (Player) other;
+	    
+	    return otherPlayer.toString().equals(this.toString());
 	}
 }
