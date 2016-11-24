@@ -247,6 +247,20 @@ public class GameLogic implements ViewController, MiddleWare {
 	}
 	
 	/**
+	 * Takes a binary sequence as a string and converts it into an integer
+	 * 
+	 * @return Value as an integer
+	 */
+	public static int binaryToInteger(String binary) {
+		char[] numbers = binary.toCharArray();
+		int result = 0;
+		for (int i = numbers.length - 1; i >= 0; i--)
+			if (numbers[i] == '1')
+				result += Math.pow(2, (numbers.length - i - 1));
+		return result;
+	}
+	
+	/**
 	 * Returns the value of the board constrained within a byte and above all other signals.
 	 * Called in one of two possible scenarios:
 	 * 1. Player makes a move, call it before move is made and transmit it to the opponent.
