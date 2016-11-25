@@ -235,15 +235,25 @@ public class GameLogic implements ViewController, MiddleWare {
 	 * @return Board value.
 	 */
 	private int getCheckNumber() {
-		// TODO Generate a unique number per board; ideally as small as possible; and with as much information as possible
-		// in the least significant bits.
-		// Currently is a placeholder that just sums the values of the token, not unique at all.
-		int sum = 0;
-		for (int i = 0; i < 7; i++)
-			for (int j = 0; j < 6; j++)
-				sum += this.positions[i][j];
-		
-		return sum;
+		int NUMBER_OF_ROW = 6;
+		int NUMBER_OF_COL = 7;
+		String binaryCheck = "";
+		int[] columnTokenCount = new int[NUMBER_OF_COL];
+		for (int col = 0; col < NUMBER_OF_COL; col++) {
+			for (int row = 0; row < NUMBER_OF_ROW; row++) {
+				if (this.positions[col][row] != 0)
+					columnTokenCount[col]++;
+			}
+		}
+		for (int tokenCount : columnTokenCount) {
+			if (tokenCount < 2) {
+				binaryCheck = binaryCheck.concat("00");
+			} else if (tokenCount < 4) {
+				binaryCheck = binaryCheck.concat("0");
+			}
+			binaryCheck = binaryCheck.concat(Integer.toBinaryString(tokenCount));
+		}
+		return binaryToInteger(binaryCheck);
 	}
 	
 	/**
