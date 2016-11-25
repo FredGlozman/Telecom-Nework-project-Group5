@@ -246,12 +246,10 @@ public class GameLogic implements ViewController, MiddleWare {
 			}
 		}
 		for (int tokenCount : columnTokenCount) {
-			if (tokenCount < 2) {
-				binaryCheck = binaryCheck.concat("00");
-			} else if (tokenCount < 4) {
-				binaryCheck = binaryCheck.concat("0");
-			}
-			binaryCheck = binaryCheck.concat(Integer.toBinaryString(tokenCount));
+			if (tokenCount % 2 == 1)
+				binaryCheck = binaryCheck.concat("1"); // odd
+			else
+				binaryCheck = binaryCheck.concat("0"); // even
 		}
 		return binaryToInteger(binaryCheck);
 	}
